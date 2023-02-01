@@ -2,8 +2,9 @@ from pydantic import BaseModel, validator, EmailStr
 from db.models.team import Team
 from utils.constants import PLAYER_POSITIONS, PLAYER_CATEGORIES
 from datetime import datetime
+from utils import exceptions as ex
 
-class NewPlayer(BaseModel):
+class PlayerBase(BaseModel):
     name: str
     surname: str
     category: str # Category on which player plays Men or Women
@@ -40,13 +41,20 @@ class NewPlayer(BaseModel):
             raise ValueError("Invalid position.")
         return v
 
-class Player(NewPlayer):
-    playerId: str
-    teams: list[Team] = []
-    playerCreationDateTime: datetime
-    
-class UpdatedPlayer(NewPlayer):
+class NewPlayer(PlayerBase):
+    password: str
+
+class UpdatedPlayer(PlayerBase):
     playerId: str
 
 class PlayerMainInfo(UpdatedPlayer):
     playerCreationDateTime: datetime
+    
+class Player(PlayerMainInfo):
+    teams: list[Team] = []
+
+class LoginPlayer(BaseModel):
+    playerId: str
+    email: str
+    password: str
+    

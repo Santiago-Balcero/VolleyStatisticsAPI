@@ -1,4 +1,5 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
+from routers.login import getCurrentPlayer
 from db.models.team import Team, NewTeam
 from db.client import dbClient
 from db.schemas.team import fullTeamSchema, fullTeamSchemas, allTeamsSchemas
@@ -8,6 +9,7 @@ from utils import exceptions as ex
 
 router = APIRouter(prefix = "/teams", tags = ["Teams"])
 
+# Currently does not depend on AUTH through Depends(getCurrentPlayer) because this is meant to be an ADMIN endpoint
 @router.get("", status_code = status.HTTP_200_OK, response_model = list[Team])
 async def getAllTeams():
     teams = allTeamsSchemas(dbClient.players.find({}, {"teams": 1}))
@@ -16,14 +18,14 @@ async def getAllTeams():
     ex.noTeamsFound()
 
 @router.get("/player/{playerId}", status_code = status.HTTP_200_OK, response_model = list[Team])
-async def getTeamsByPlayer(playerId: str):
+async def getTeamsByPlayer(playerId: str = Depends(getCurrentPlayer)):
     result = dbClient.players.find_one({"_id": ObjectId(playerId)}, {"teams": 1})
     if not result is None:
         return fullTeamSchemas(result["teams"])
     ex.playerNotFound()
 
 @router.get("/{teamId}", status_code = status.HTTP_200_OK, response_model = Team)
-async def getTeamById(teamId: str):
+async def getTeamById(teamId: str = Depends(getCurrentPlayer)):
     result = dbClient.players.find_one({"teams.teamId": ObjectId(teamId)}, {"teams": 1})
     if not result is None:
         for team in result["teams"]:
@@ -32,7 +34,7 @@ async def getTeamById(teamId: str):
     ex.teamNotFound()
 
 @router.post("/{playerId}", status_code = status.HTTP_201_CREATED, response_model = str)
-async def createTeam(newTeam: NewTeam, playerId: str):
+async def createTeam(newTeam: NewTeam, playerId: str = Depends(getCurrentPlayer)):
     result = dbClient.players.find_one({"_id": ObjectId(playerId)}, {"teams": 1})
     if result is None:
         ex.playerNotFound()
@@ -47,7 +49,7 @@ async def createTeam(newTeam: NewTeam, playerId: str):
     ex.unableToCreateTeam()
 
 @router.put("/{playerId}/{teamId}/{teamName}", status_code = status.HTTP_200_OK, response_model = str)
-async def updateTeamName(playerId: str, teamId: str, teamName: str):
+async def updateTeamName(playerId: str, teamId: str, teamName: str = Depends(getCurrentPlayer)):
     teamName = teamName.strip().title()
     result = dbClient.players.find_one({"_id": ObjectId(playerId)}, {"teams": 1})
     if result is None:
@@ -59,7 +61,7 @@ async def updateTeamName(playerId: str, teamId: str, teamName: str):
     ex.teamNotFound()
         
 @router.delete("/{playerId}/{teamId}", status_code = status.HTTP_200_OK, response_model = str)
-async def deleteTeam(playerId: str, teamId: str):
+async def deleteTeam(playerId: str, teamId: str = Depends(getCurrentPlayer)):
     result = dbClient.players.find_one({"_id": ObjectId(playerId)}, {"teams": 1})
     if result is None:
         ex.playerNotFound()

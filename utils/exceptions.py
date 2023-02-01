@@ -1,6 +1,9 @@
 from fastapi import HTTPException, status
 from db.models.game import Game
 
+def wrongCredentials() -> Exception:
+    raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Wrong login credentials.")
+
 def playerAlreadyExists() -> Exception:
     raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Player already registered in database.")
 
@@ -12,6 +15,9 @@ def noPlayersFound() -> Exception:
 
 def unableToCreatePlayer() -> Exception:
     raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to create player.")
+
+def invalidPassword() -> Exception:
+    raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Invalid password.")
 
 def unableToUpdatePlayer() -> Exception:
     raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to update player.")
@@ -29,13 +35,16 @@ def unableToCreateTeam() -> Exception:
     raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to create team.")
 
 def activeGame(game: Game) -> Exception:
-    raise HTTPException(status_code = status.HTTP_403_FORBIDDEN, detail = f"Game {game['gameId']} started at {game['gameDateTime']} in {game['gameCity']}, {game['gameCountry']} vs {game['opponentTeam']} is still active.")
+    raise HTTPException(status_code = status.HTTP_403_FORBIDDEN, detail = f"There is another active game: game with id {game['gameId']} started at {game['gameDateTime']} in {game['gameCity']}, {game['gameCountry']} vs {game['opponentTeam']} is still active.")
 
 def gameNotFound() -> Exception:
     raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Game not found.")
 
 def gameAlreadyFinished() -> Exception:
     raise HTTPException(status_code = status.HTTP_405_METHOD_NOT_ALLOWED, detail = "Game was already finished.")
+
+def unableToCreateGame() -> Exception:
+    raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to create game.")
 
 def unableToUpdateGame() -> Exception:
     raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to update game.")
@@ -45,3 +54,6 @@ def invalidAction() -> Exception:
 
 def invalidActionResult() -> Exception:
     raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Invalid action result.")
+
+def invalidActionAndActionResult() -> Exception:
+    raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Invalid combination for action and action result.")
