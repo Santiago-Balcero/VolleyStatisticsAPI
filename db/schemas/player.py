@@ -1,5 +1,11 @@
 from db.schemas.team import fullTeamSchemas
 from db.models.player import Player, PlayerMainInfo, LoginPlayer
+from logging.config import dictConfig
+import logging
+from loggerConfig import LogConfig
+
+dictConfig(LogConfig().dict())
+log = logging.getLogger("volleystats")
 
 # Schema used for data update operations of one player
 def mainInfoPlayerSchema(player) -> PlayerMainInfo:
@@ -10,7 +16,14 @@ def mainInfoPlayerSchema(player) -> PlayerMainInfo:
         "category": player["category"],
         "position": player["position"],
         "email": player["email"],
-        "playerCreationDateTime": player["playerCreationDateTime"]
+        "playerCreationDateTime": str(player["playerCreationDateTime"]).split(" ")[0],
+        "totalGames": player["totalGames"],
+        "totalActions": player["totalActions"],
+        "totalPoints": player["totalPoints"],
+        "totalPerfects": player["totalPerfects"],
+        "totalNeutrals": player["totalNeutrals"],
+        "totalErrors": player["totalErrors"],
+        "totalEffectiveness": player["totalEffectiveness"]
     }))
 
 def loginPlayerSchema(player) -> LoginPlayer:

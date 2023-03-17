@@ -43,12 +43,26 @@ class PlayerBase(BaseModel):
 
 class NewPlayer(PlayerBase):
     password: str
+    totalGames = 0
+    totalActions: int = 0
+    totalPoints: int = 0
+    totalPerfects: int = 0
+    totalNeutrals: int = 0
+    totalErrors: int = 0
+    totalEffectiveness: float = 0.00
 
 class UpdatedPlayer(PlayerBase):
     playerId: str
 
 class PlayerMainInfo(UpdatedPlayer):
-    playerCreationDateTime: datetime
+    playerCreationDateTime: str
+    totalGames: int
+    totalActions: int
+    totalPoints: int
+    totalPerfects: int
+    totalNeutrals: int
+    totalErrors: int
+    totalEffectiveness: float
     
 class Player(PlayerMainInfo):
     teams: list[Team] = []

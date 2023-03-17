@@ -37,7 +37,9 @@ async def getCurrentPlayer(token: str = Depends(oauth2)):
 @router.post("/login")
 async def login(form: OAuth2PasswordRequestForm = Depends()):
     log.info(f"Login request for {form.username}.")
+    # REMOVE
     log.debug(f"Data for login request, username: {form.username}, password: {form.password}.")
+    # ---
     result = dbClient.players.find_one({"email": form.username}, {"email": 1, "password": 1})
     if result is None:
         ex.wrongCredentials()

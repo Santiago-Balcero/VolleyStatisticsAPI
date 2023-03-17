@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Depends
 from routers.access import getCurrentPlayer
-from db.models.player import NewPlayer, Player, UpdatedPlayer
+from db.models.player import NewPlayer, Player, PlayerMainInfo, UpdatedPlayer
 from db.client import dbClient
 from db.schemas.player import mainInfoPlayerSchema, fullPlayerSchema, fullPlayerSchemas
 from bson import ObjectId
@@ -19,11 +19,11 @@ async def getAllPlayers():
         return players
     ex.noPlayersFound()
 
-@router.get("/{playerId}", status_code = status.HTTP_200_OK, response_model = Player)
+@router.get("/{playerId}", status_code = status.HTTP_200_OK, response_model = PlayerMainInfo)
 async def getPlayerById(playerId: str = Depends(getCurrentPlayer)):
     result = dbClient.players.find_one({"_id": ObjectId(playerId)})
     if not result is None:
-        return fullPlayerSchema(result)
+        return mainInfoPlayerSchema(result)
     ex.playerNotFound()
 
 # Does not depend on AUTH through Depends(getCurrentPlayer) because this is used for creating new account
