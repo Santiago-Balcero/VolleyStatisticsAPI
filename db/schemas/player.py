@@ -11,8 +11,8 @@ log = logging.getLogger("volleystats")
 def mainInfoPlayerSchema(player) -> PlayerMainInfo:
     return PlayerMainInfo(**({
         "playerId": str(player["_id"]),
-        "name": player["name"],
-        "surname": player["surname"],
+        "firstName": player["firstName"],
+        "lastName": player["lastName"],
         "category": player["category"],
         "position": player["position"],
         "email": player["email"],
@@ -37,8 +37,8 @@ def loginPlayerSchema(player) -> LoginPlayer:
 def fullPlayerSchema(player) -> Player:
     return Player(**({
         "playerId": str(player["_id"]),
-        "name": player["name"],
-        "surname": player["surname"],
+        "firstName": player["firstName"],
+        "lastName": player["lastName"],
         "category": player["category"],
         "position": player["position"],
         "email": player["email"],

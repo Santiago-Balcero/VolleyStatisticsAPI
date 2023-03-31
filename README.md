@@ -12,4 +12,5 @@
 - When creating a new game add a 1 to total Games in Player statistics
 - Previous two things also for teams scope????
 - Add logging to all API
-- 
+- Parametric texts for constants, get them from DB
+- A lint for python

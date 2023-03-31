@@ -1,35 +1,32 @@
 from pydantic import BaseModel, validator, EmailStr
 from db.models.team import Team
 from utils.constants import PLAYER_POSITIONS, PLAYER_CATEGORIES
-from datetime import datetime
-from utils import exceptions as ex
 
 class PlayerBase(BaseModel):
-    name: str
-    surname: str
+    firstName: str
+    lastName: str
     category: str # Category on which player plays Men or Women
     position: str
     email: EmailStr
     
-    @validator("name")
-    def nameValidation(cls, v):
+    @validator("firstName")
+    def firstNameValidation(cls, v):
         v = v.strip().title()
-        if len(v) < 1:
-            raise ValueError("Invalid name.")
+        if len(v) < 1 or len(v) > 30:
+            raise ValueError("Invalid first name.")
         return v
     
-    @validator("surname")
-    def surnameValidation(cls, v):
+    @validator("lastName")
+    def lastNameValidation(cls, v):
         v = v.strip().title()
-        if len(v) < 1:
-            raise ValueError("Invalid surname.")
+        if len(v) < 1 or len(v) > 30:
+            raise ValueError("Invalid last name.")
         return v
     
     @validator("category")
     def categoryValidation(cls, v):
         v = v.strip().title()
-        categories = PLAYER_CATEGORIES
-        if v not in categories:
+        if v not in PLAYER_CATEGORIES:
             raise ValueError("Invalid category.")
         return v
     
@@ -50,7 +47,14 @@ class NewPlayer(PlayerBase):
     totalNeutrals: int = 0
     totalErrors: int = 0
     totalEffectiveness: float = 0.00
-
+    
+    @validator("password")
+    def passwordValidation(cls, v):
+      v = v.strip()
+      if " " in v or len(v) < 12 or sum(1 for x in v if x.isupper()) == 0 or sum(1 for x in v if x.islower()) == 0 or sum(1 for x in v if x.isdigit()) == 0:
+        raise ValueError("Invalid password.")
+      return v
+    
 class UpdatedPlayer(PlayerBase):
     playerId: str
 
