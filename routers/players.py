@@ -46,7 +46,7 @@ async def createPlayer(player: NewPlayer):
 	id = dbClient.players.insert_one(playerDict).inserted_id
 	if not id is None:
 		newPlayer = mainInfoPlayerSchema(dbClient.players.find_one({"_id": id}))
-		return f"Player {newPlayer.firstName} {newPlayer.lastName} successfully registered. Please log in."
+		return f"Player {newPlayer.firstName} {newPlayer.lastName} successfully registered."
 	ex.unableToCreatePlayer()
 		
 @router.put("/password/{playerId}/{newPassword}", status_code = status.HTTP_200_OK, response_model = str)
