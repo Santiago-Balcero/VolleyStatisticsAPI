@@ -43,7 +43,14 @@ def fullPlayerSchema(player) -> Player:
         "position": player["position"],
         "email": player["email"],
         "teams": fullTeamSchemas(player["teams"]) if len(player["teams"]) > 0 else [],
-        "playerCreationDateTime": player["playerCreationDateTime"]
+        "totalGames": player["totalGames"],
+        "totalActions": player["totalActions"],
+        "totalPoints": player["totalPoints"],
+        "totalPerfects": player["totalPerfects"],
+        "totalNeutrals": player["totalNeutrals"],
+        "totalErrors": player["totalErrors"],
+        "totalEffectiveness": player["totalEffectiveness"],
+        "playerCreationDateTime": str(player["playerCreationDateTime"]).split(" ")[0]
     }))
 
 # List of Player objects

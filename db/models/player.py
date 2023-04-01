@@ -50,10 +50,7 @@ class NewPlayer(PlayerBase):
     
     @validator("password")
     def passwordValidation(cls, v):
-      v = v.strip()
-      if " " in v or len(v) < 12 or sum(1 for x in v if x.isupper()) == 0 or sum(1 for x in v if x.islower()) == 0 or sum(1 for x in v if x.isdigit()) == 0:
-        raise ValueError("Invalid password.")
-      return v
+        return passwordCheck(v)
     
 class UpdatedPlayer(PlayerBase):
     playerId: str
@@ -76,3 +73,15 @@ class LoginPlayer(BaseModel):
     email: str
     password: str
     
+class NewPassword(BaseModel):
+	newPassword: str
+	
+	@validator("newPassword")
+	def passwordValidation(cls, v):
+		return passwordCheck(v)
+
+def passwordCheck(v):
+    v = v.strip()
+    if " " in v or len(v) < 12 or sum(1 for x in v if x.isupper()) == 0 or sum(1 for x in v if x.islower()) == 0 or sum(1 for x in v if x.isdigit()) == 0:
+        raise ValueError("Invalid password.")
+    return v

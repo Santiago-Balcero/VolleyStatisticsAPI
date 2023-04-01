@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, Depends
 from routers.access import getCurrentPlayer
-from db.models.player import NewPlayer, Player, PlayerMainInfo, UpdatedPlayer
+from db.models.player import NewPlayer, Player, PlayerMainInfo, UpdatedPlayer, NewPassword
 from db.client import dbClient
-from db.schemas.player import mainInfoPlayerSchema, fullPlayerSchema, fullPlayerSchemas
+from db.schemas.player import mainInfoPlayerSchema, fullPlayerSchemas
 from bson import ObjectId
 from datetime import datetime
 from routers.access import passwordContext
@@ -17,7 +17,8 @@ router = APIRouter(prefix = "/players", tags = ["Players"])
 dictConfig(LogConfig().dict())
 log = logging.getLogger("volleystats")
 
-# Currently does not depend on AUTH through Depends(getCurrentPlayer) because this is meant to be an ADMIN endpoint
+# Currently does not depend on AUTH through Depends(getCurrentPlayer) 
+# because this is meant to be an ADMIN endpoint
 @router.get("", status_code = status.HTTP_200_OK, response_model = list[Player])
 async def getAllPlayers():
 	log.info("Request for getAllPlayers.")
@@ -27,7 +28,7 @@ async def getAllPlayers():
 		return players
 	ex.noPlayersFound()
 
-@router.get("/{playerId}", status_code = status.HTTP_200_OK, response_model = PlayerMainInfo)
+@router.get("/player", status_code = status.HTTP_200_OK, response_model = PlayerMainInfo)
 async def getPlayerById(playerId: str = Depends(getCurrentPlayer)):
 	result = dbClient.players.find_one({"_id": ObjectId(playerId)})
 	if not result is None:
@@ -49,19 +50,20 @@ async def createPlayer(player: NewPlayer):
 		return f"Player {newPlayer.firstName} {newPlayer.lastName} successfully registered."
 	ex.unableToCreatePlayer()
 		
-@router.put("/password/{playerId}/{newPassword}", status_code = status.HTTP_200_OK, response_model = str)
-async def updatePassword(playerId: str, newPassword: str = Depends(getCurrentPlayer)):
+@router.put("/password", status_code = status.HTTP_200_OK, response_model = str)
+async def updatePassword(newPassword: NewPassword, playerId: str = Depends(getCurrentPlayer)):
+	log.debug(f"New password: {newPassword.newPassword}")
 	result = dbClient.players.find_one({"_id": ObjectId(playerId)})
 	if result is None:
 		ex.playerNotFound()
-	newPassword = passwordContext.hash(newPassword)
-	result = dbClient.players.update_one({"_id": ObjectId(playerId)}, {"$set": {"password": newPassword}})
+	password = passwordContext.hash(newPassword.newPassword)
+	result = dbClient.players.update_one({"_id": ObjectId(playerId)}, {"$set": {"password": password}})
 	if result.modified_count == 1:
 		return "Password successfully changed."
 	ex.unableToUpdatePlayer()
 		
 @router.put("", status_code = status.HTTP_200_OK, response_model = str)
-async def updatePlayer(player: UpdatedPlayer = Depends(getCurrentPlayer)):
+async def updatePlayer(player: UpdatedPlayer, playerId: str = Depends(getCurrentPlayer)):
 	email = dbClient.players.find_one({"_id": ObjectId(player.playerId)}, {"email": 1})["email"]
 	if email != player.email:
 		if checkPlayerExistance(player.email):
@@ -73,13 +75,12 @@ async def updatePlayer(player: UpdatedPlayer = Depends(getCurrentPlayer)):
 						"category": player.category, 
 						"position": player.position, 
 						"email": player.email
-      		}
-    		})
+      		}})
 	if result.modified_count == 1:
 		return f"Player with id {player.playerId} was successfully updated."
 	ex.unableToUpdatePlayer()
 
-@router.delete("/{playerId}", status_code = status.HTTP_200_OK, response_model = str)
+@router.delete("/delete", status_code = status.HTTP_200_OK, response_model = str)
 async def deletePlayer(playerId: str = Depends(getCurrentPlayer)):
 	if dbClient.players.delete_one({"_id": ObjectId(playerId)}).deleted_count == 1:
 		return f"Player with id {playerId} was successfully deleted."
