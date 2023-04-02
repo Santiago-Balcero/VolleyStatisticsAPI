@@ -7,7 +7,9 @@
 
 
 # TO DO
-
+- Check api of angular course what it returns in refresh_token
+- Add a refresh_token to first response of login
+- Create endpoit to renew tokens
 - Test all endpoints then export postman collection
 - In update game statistics add a way to update also Player statistics
 - Add logging to all API

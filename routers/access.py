@@ -25,36 +25,42 @@ SECRET = config("SECRET")
 ALGORITHM = config("ALGORITHM")
 
 async def getCurrentPlayer(token: str = Depends(oauth2)):
-    try:
-        payload = jwt.decode(token, SECRET, algorithms = [ALGORITHM])
-        playerId = payload.get("sub")
-        if playerId is None:
-            ex.wrongCredentials()
-    except JWTError:
-        ex.wrongCredentials()
-    return playerId
+	try:
+		payload = jwt.decode(token, SECRET, algorithms = [ALGORITHM])
+		playerId = payload.get("sub")
+		if playerId is None:
+			ex.wrongCredentials()
+	except JWTError:
+		ex.wrongCredentials()
+	return playerId
 
 @router.post("/login")
 async def login(form: OAuth2PasswordRequestForm = Depends()):
-    log.info(f"Login request for {form.username}.")
-    # REMOVE
-    log.debug(f"Data for login request, username: {form.username}, password: {form.password}.")
-    # ---
-    result = dbClient.players.find_one({"email": form.username}, {"email": 1, "password": 1})
-    if result is None:
-        ex.wrongCredentials()
-    player = loginPlayerSchema(result)
-    if not verifyPassword(form.password, player.password):
-        ex.wrongCredentials()
-    accessToken = {
-        "sub": player.playerId,
-        "exp": datetime.utcnow() + timedelta(minutes = TOKEN_LIFE)
-    }
-    token: str = jwt.encode(accessToken, SECRET, algorithm = ALGORITHM)
-    log.debug(f"JWT: {token}")
-    log.info("JWT was created and sent as response.")
-    # If user authentication is ok API returns access token
-    return {"access_token": token, "token_type": "bearer"}
+	log.info(f"Login request for {form.username}.")
+	# REMOVE
+	log.debug(f"Data for login request, username: {form.username}, password: {form.password}.")
+	# ---
+	result = dbClient.players.find_one({"email": form.username}, {"email": 1, "password": 1})
+	if result is None:
+		ex.wrongCredentials()
+	player = loginPlayerSchema(result)
+	if not verifyPassword(form.password, player.password):
+		ex.wrongCredentials()
+	accessToken = {
+		"sub": player.playerId,
+		"exp": datetime.utcnow() + timedelta(minutes = TOKEN_LIFE)
+	}
+	refreshToken = {
+		"sub": player.playerId,
+		"exp": datetime.utcnow() + timedelta(minutes = TOKEN_LIFE * 2)
+	}
+	token: str = jwt.encode(accessToken, SECRET, algorithm = ALGORITHM)
+	token2: str = jwt.encode(refreshToken, SECRET, algorithm = ALGORITHM)
+	log.debug(f"Access Token: {token}")
+	log.debug(f"Refresh Token: {token2}")
+	log.info("Acces and refresh tokens were created and sent as response.")
+	# If user authentication is ok API returns access token
+	return {"access_token": token, "refresh_token": token2, "token_type": "bearer"}
 
 def verifyPassword(plainPassword: str, hashedPassword: str):
-    return passwordContext.verify(plainPassword, hashedPassword)
+	return passwordContext.verify(plainPassword, hashedPassword)
