@@ -1,4 +1,4 @@
-from db.models.game import Game
+from models.gameModels import Game
 
 def gameMainInfoSchema(game) -> dict:
     return {
@@ -72,3 +72,4 @@ def fullGameSchema(game) -> Game:
 
 def fullGameSchemas(games) -> list[Game]:
     [fullGameSchema(game) for game in games]
+    

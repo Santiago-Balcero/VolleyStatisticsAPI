@@ -1,8 +1,8 @@
-from db.schemas.team import fullTeamSchemas
-from db.models.player import Player, PlayerMainInfo, LoginPlayer
+from schemas.teamSchemas import fullTeamSchemas
+from models.playerModels import Player, PlayerMainInfo, LoginPlayer
 from logging.config import dictConfig
 import logging
-from loggerConfig import LogConfig
+from config.logger.loggerConfig import LogConfig
 
 dictConfig(LogConfig().dict())
 log = logging.getLogger("volleystats")

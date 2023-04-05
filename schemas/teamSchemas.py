@@ -1,5 +1,5 @@
-from db.models.team import Team
-from db.schemas.game import fullGameSchemas
+from models.teamModels import Team
+from schemas.gameSchemas import fullGameSchemas
     
 def fullTeamSchema(team) -> Team:
     return Team(**({

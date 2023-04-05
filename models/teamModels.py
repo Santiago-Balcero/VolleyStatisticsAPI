@@ -1,5 +1,5 @@
 from pydantic import BaseModel, validator
-from db.models.game import Game
+from models.gameModels import Game
 from utils.constants import TEAM_CATEGORIES
 from datetime import datetime
 
@@ -25,4 +25,3 @@ class Team(NewTeam):
     teamId: str
     games: list[Game]
     teamCreationDateTime: datetime
-    

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status, Depends
-from routers.access import getCurrentPlayer
+from routers.accessController import getCurrentPlayer
 from pymongo import ReturnDocument
-from db.models.game import Game, NewGame, GameAction, EndGame
-from db.client import dbClient
-from db.schemas.game import fullGameSchema
+from models.gameModels import Game, NewGame, GameAction, EndGame
+from config.db.client import dbClient
+from schemas.gameSchemas import fullGameSchema
 from utils.constants import GAME_ACTIONS, ACTION_RESULTS
 from bson import ObjectId
 from datetime import datetime
@@ -164,3 +164,4 @@ def checkForValidActionAndActionResult(action: str, actionResult: str):
     elif action in GAME_ACTIONS[3:]:
         if actionResult == "Points":
             ex.invalidActionAndActionResult()
+            

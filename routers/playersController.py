@@ -1,14 +1,13 @@
 from fastapi import APIRouter, status, Depends
-from routers.access import getCurrentPlayer
-from db.models.player import NewPlayer, Player, PlayerMainInfo, UpdatedPlayer, NewPassword
-from db.client import dbClient
-from db.schemas.player import mainInfoPlayerSchema, fullPlayerSchemas
+from routers.accessController import getCurrentPlayer, passwordContext
+from models.playerModels import NewPlayer, Player, PlayerMainInfo, UpdatedPlayer, NewPassword
+from config.db.client import dbClient
+from schemas.playerSchemas import mainInfoPlayerSchema, fullPlayerSchemas
 from bson import ObjectId
 from datetime import datetime
-from routers.access import passwordContext
 from logging.config import dictConfig
 import logging
-from loggerConfig import LogConfig
+from config.logger.loggerConfig import LogConfig
 
 from utils import exceptions as ex
 

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, validator, EmailStr
-from db.models.team import Team
+from models.teamModels import Team
 from utils.constants import PLAYER_POSITIONS, PLAYER_CATEGORIES
 
 class PlayerBase(BaseModel):

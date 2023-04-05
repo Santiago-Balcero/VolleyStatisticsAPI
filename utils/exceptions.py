@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
-from db.models.game import Game
+from models.gameModels import Game
 from logging.config import dictConfig
 import logging
-from loggerConfig import LogConfig
+from config.logger.loggerConfig import LogConfig
 
 dictConfig(LogConfig().dict())
 log = logging.getLogger("volleystats")

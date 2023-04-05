@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, Depends
-from routers.access import getCurrentPlayer
-from db.models.team import Team, NewTeam
-from db.client import dbClient
-from db.schemas.team import fullTeamSchema, fullTeamSchemas, allTeamsSchemas
+from routers.accessController import getCurrentPlayer
+from models.teamModels import Team, NewTeam
+from config.db.client import dbClient
+from schemas.teamSchemas import fullTeamSchema, fullTeamSchemas, allTeamsSchemas
 from bson import ObjectId
 from datetime import datetime
 from utils import exceptions as ex
@@ -81,3 +81,4 @@ def checkTeamExistance(teams: list, teamName: str):
 	for team in teams:
 		if team["teamName"] == teamName:
 			ex.teamAlreadyExists()
+   
