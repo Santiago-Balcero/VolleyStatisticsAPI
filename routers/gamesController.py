@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends
-from routers.accessController import getCurrentPlayer
+from routers.loginController import getCurrentPlayer
 from pymongo import ReturnDocument
 from models.gameModels import Game, NewGame, GameAction, EndGame
 from config.db.client import dbClient

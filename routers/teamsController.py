@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends
-from routers.accessController import getCurrentPlayer
+from routers.loginController import getCurrentPlayer
 from models.teamModels import Team, NewTeam
 from config.db.client import dbClient
 from schemas.teamSchemas import fullTeamSchema, fullTeamSchemas, allTeamsSchemas

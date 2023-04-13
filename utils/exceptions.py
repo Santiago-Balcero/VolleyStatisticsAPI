@@ -11,6 +11,10 @@ def wrongCredentials() -> Exception:
 	log.warning("Wrong credentials error response sent.")
 	raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Wrong login credentials.")
 
+def invalidToken() -> Exception:
+    log.warning("Invalid token response sent.")
+    raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Invalid token.")
+
 def playerAlreadyExists() -> Exception:
 	log.warning("Player already registered in database error response sent.")
 	raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Player already registered in database.")

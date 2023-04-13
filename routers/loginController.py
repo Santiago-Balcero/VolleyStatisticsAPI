@@ -10,8 +10,8 @@ from decouple import config
 from logging.config import dictConfig
 import logging
 from config.logger.loggerConfig import LogConfig
-from models.accessModels import AuthResponse
-from services.accessService import loginService, updateToken
+from models.loginModels import AuthResponse, RefreshToken
+from services.loginService import loginService, checkIfPlayerExists
 
 router = APIRouter(prefix = "/access", tags = ["Login"])
 
@@ -27,26 +27,21 @@ SECRET = config("SECRET")
 ALGORITHM = config("ALGORITHM")
 
 async def getCurrentPlayer(token: str = Depends(oauth2)):
-	try:
-		payload = jwt.decode(token, SECRET, algorithms = [ALGORITHM])
-		playerId = payload.get("sub")
-		if playerId is None:
-			ex.wrongCredentials()
-	except JWTError:
-		ex.wrongCredentials()
-	return playerId
+	return decodeToken(token)
 
 @router.post("/login", status_code = status.HTTP_200_OK, response_model = AuthResponse)
 async def login(form: OAuth2PasswordRequestForm = Depends()):
 	log.info(f"Login request for {form.username}.")
 	log.debug(f"Data for login request, username: {form.username}, password: {form.password}.")
-	return loginService(form.username, form.password)
+	playerId = loginService(form.username, form.password)
+	return createAuthResponse(playerId)
 
 @router.post("/refresh-token", status_code = status.HTTP_200_OK, response_model = AuthResponse)
-async def refreshToken(refresh_token: str):
+async def updateTokens(refreshToken: RefreshToken):
 	log.info(f"Refresh token request.")
-	log.debug(f"Refresh token for request: {refresh_token}.")
-	return updateToken(refresh_token)
+	log.debug(f"Refresh token for request: {refreshToken.refreshToken}.")
+	playerId = decodeToken(refreshToken.refreshToken)
+	return createAuthResponse(playerId)
 	
 def createAuthResponse(playerId: str) -> AuthResponse:
 	accessToken = {
@@ -63,7 +58,19 @@ def createAuthResponse(playerId: str) -> AuthResponse:
 	log.debug(f"Refresh Token: {token2}")
 	log.info("Acces and refresh tokens were created and sent as response.")
 	# If user authentication is ok API returns access token
-	return AuthResponse(access_token = token, refresh_token = token2)
+	return AuthResponse(accessToken = token, refreshToken = token2)
 
 def verifyPassword(plainPassword: str, hashedPassword: str):
 	return passwordContext.verify(plainPassword, hashedPassword)
+
+def decodeToken(token: str):
+	try:
+		payload = jwt.decode(token, SECRET, algorithms = [ALGORITHM])
+		playerId = payload.get("sub")
+		if playerId is None:
+			ex.invalidToken()
+		if not checkIfPlayerExists(playerId):
+			ex.invalidToken()
+	except JWTError:
+		ex.invalidToken()
+	return playerId

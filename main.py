@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from routers import accessController, playersController, teamsController, gamesController
+from routers import loginController, playersController, teamsController, gamesController
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-app.include_router(accessController.router)
+app.include_router(loginController.router)
 app.include_router(playersController.router)
 app.include_router(teamsController.router)
 app.include_router(gamesController.router)

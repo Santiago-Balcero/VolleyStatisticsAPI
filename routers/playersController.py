@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends
-from routers.accessController import getCurrentPlayer, passwordContext
+from routers.loginController import getCurrentPlayer, passwordContext
 from models.playerModels import NewPlayer, Player, PlayerMainInfo, UpdatedPlayer, NewPassword
 from config.db.client import dbClient
 from schemas.playerSchemas import mainInfoPlayerSchema, fullPlayerSchemas
@@ -31,7 +31,7 @@ async def getAllPlayers():
 async def getPlayerById(playerId: str = Depends(getCurrentPlayer)):
 	result = dbClient.players.find_one({"_id": ObjectId(playerId)})
 	if not result is None:
-			return mainInfoPlayerSchema(result)
+		return mainInfoPlayerSchema(result)
 	ex.playerNotFound()
 
 # Does not depend on AUTH through Depends(getCurrentPlayer) because this is used for creating new account
