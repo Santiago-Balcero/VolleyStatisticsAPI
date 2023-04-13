@@ -1,14 +1,8 @@
 from schemas.teamSchemas import fullTeamSchemas
 from models.playerModels import Player, PlayerMainInfo, LoginPlayer
-from logging.config import dictConfig
-import logging
-from config.logger.loggerConfig import LogConfig
-
-dictConfig(LogConfig().dict())
-log = logging.getLogger("volleystats")
 
 # Schema used for data update operations of one player
-def mainInfoPlayerSchema(player) -> PlayerMainInfo:
+def mainInfoPlayerSchema(player: dict) -> PlayerMainInfo:
     return PlayerMainInfo(**({
         "playerId": str(player["_id"]),
         "firstName": player["firstName"],
@@ -26,7 +20,7 @@ def mainInfoPlayerSchema(player) -> PlayerMainInfo:
         "totalEffectiveness": player["totalEffectiveness"]
     }))
 
-def loginPlayerSchema(player) -> LoginPlayer:
+def loginPlayerSchema(player: dict) -> LoginPlayer:
     return LoginPlayer(**({
         "playerId": str(player["_id"]),
         "email": player["email"],
@@ -34,7 +28,7 @@ def loginPlayerSchema(player) -> LoginPlayer:
     }))
 
 # Returns entire Player object
-def fullPlayerSchema(player) -> Player:
+def fullPlayerSchema(player: dict) -> Player:
     return Player(**({
         "playerId": str(player["_id"]),
         "firstName": player["firstName"],
@@ -54,5 +48,5 @@ def fullPlayerSchema(player) -> Player:
     }))
 
 # List of Player objects
-def fullPlayerSchemas(players) -> list[Player]:
+def fullPlayerSchemas(players: list[dict]) -> list[Player]:
     return [fullPlayerSchema(player) for player in players]
