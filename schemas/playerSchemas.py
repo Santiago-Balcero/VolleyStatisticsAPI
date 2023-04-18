@@ -10,6 +10,7 @@ def mainInfoPlayerSchema(player: dict) -> PlayerMainInfo:
         "category": player["category"],
         "position": player["position"],
         "email": player["email"],
+        # Sends only date, not time, to PlayerMainInfo object
         "playerCreationDateTime": str(player["playerCreationDateTime"]).split(" ")[0],
         "totalGames": player["totalGames"],
         "totalActions": player["totalActions"],

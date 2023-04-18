@@ -1,11 +1,13 @@
 from fastapi import APIRouter, status, Depends
 from routers.loginController import getCurrentPlayer
-from models.teamModels import Team, NewTeam
-from config.db.client import dbClient
+from models.teamModels import Team, NewTeam, UpdatedTeam
 from schemas.teamSchemas import fullTeamSchema, fullTeamSchemas, allTeamsSchemas
 from bson import ObjectId
 from datetime import datetime
 from utils import exceptions as ex
+from config.db.client import dbClient
+import services.teamsService as TeamService
+from config.logger.logger import LOG
 
 router = APIRouter(prefix = "/teams", tags = ["Teams"])
 
@@ -13,67 +15,51 @@ router = APIRouter(prefix = "/teams", tags = ["Teams"])
 # because this is meant to be an ADMIN endpoint
 @router.get("", status_code = status.HTTP_200_OK, response_model = list[Team])
 async def getAllTeams():
-	teams = allTeamsSchemas(dbClient.players.find({}, {"teams": 1}))
-	if len(teams) > 0:
-		return teams
-	ex.noTeamsFound()
+	LOG.info("Request for getAllTeams.")
+	teams: list[Team] = TeamService.getAllTeams()
+	LOG.info("List of teams sent as response. Model: Team.")
+	return teams
 
 @router.get("/player", status_code = status.HTTP_200_OK, response_model = list[Team])
 async def getTeamsByPlayer(playerId: str = Depends(getCurrentPlayer)):
-	result = dbClient.players.find_one({"_id": ObjectId(playerId)}, {"teams": 1})
-	if not result is None:
-		return fullTeamSchemas(result["teams"])
-	ex.playerNotFound()
+	LOG.info("Request for getTeamsByPlayer.")
+	LOG.debug(f"User: {playerId}.")
+	teams: list[Team] = TeamService.getTeamsByPlayer(playerId)
+	LOG.info("List of teams sent as response. Model: Team.")
+	return teams
+ 
 
 @router.get("/{teamId}", status_code = status.HTTP_200_OK, response_model = Team)
 async def getTeamById(teamId: str, playerId: str = Depends(getCurrentPlayer)):
-	result = dbClient.players.find_one({"teams.teamId": ObjectId(teamId)}, {"teams": 1})
-	if not result is None:
-		for team in result["teams"]:
-			if team["teamId"] == ObjectId(teamId):
-				return fullTeamSchema(team)
-	ex.teamNotFound()
+	LOG.info("Request for getTeamById.")
+	LOG.debug(f"User: {playerId}. Team: {teamId}.")
+	team = TeamService.getTeamById(teamId)
+	LOG.info("Team info sent as response. Model: Team.")
+	return team
 
 @router.post("/newTeam", status_code = status.HTTP_201_CREATED, response_model = str)
 async def createTeam(newTeam: NewTeam, playerId: str = Depends(getCurrentPlayer)):
-	result = dbClient.players.find_one({"_id": ObjectId(playerId)}, {"teams": 1})
-	if result is None:
-		ex.playerNotFound()
-	checkTeamExistance(result["teams"], newTeam.teamName)
-	newTeamDict = dict(newTeam)
-	newTeamDict["teamId"] = ObjectId()
-	newTeamDict["games"] = []
-	newTeamDict["teamCreationDateTime"] = datetime.now()
-	result = dbClient.players.update_one({"_id": ObjectId(playerId)}, {"$push": {"teams": newTeamDict}})
-	if result.modified_count == 1:
-		return f"Team {newTeam.teamName} successfully registered."
-	ex.unableToCreateTeam()
+	LOG.info("Request for createTeam.")
+	LOG.debug(f"User: {playerId}.")
+	TeamService.createTeam(newTeam, playerId)
+	LOG.info("New team created, response sent.")
+	return f"Team {newTeam.teamName} successfully registered."
 
-@router.put("/player/{teamId}/{teamName}", status_code = status.HTTP_200_OK, response_model = str)
-async def updateTeamName(teamId: str, teamName: str, playerId: str = Depends(getCurrentPlayer)):
-	teamName = teamName.strip().title()
-	result = dbClient.players.find_one({"_id": ObjectId(playerId)}, {"teams": 1})
-	if result is None:
-		ex.playerNotFound()
-	checkTeamExistance(result["teams"], teamName)
-	result = dbClient.players.update_one(
-     	{"teams": {"$elemMatch": {"teamId": ObjectId(teamId)}}},
-      	{"$set": {"teams.$.teamName": teamName}})
-	if result.modified_count == 1:
-		return f"Team with id {teamId} changed it's name to {teamName}"
-	ex.teamNotFound()
+@router.put("", status_code = status.HTTP_200_OK, response_model = str)
+async def updateTeamName(updatedTeam: UpdatedTeam, playerId: str = Depends(getCurrentPlayer)):
+	LOG.info("Request for updateTeamName.")
+	LOG.debug(f"User: {playerId}. Team: {updatedTeam.teamId}")
+	TeamService.updateTeamName(updatedTeam, playerId)
+	LOG.info("Team updated, response sent.")
+	return f"Team changed it's name to {updatedTeam.newTeamName}."
 				
-@router.delete("/player/{teamId}", status_code = status.HTTP_200_OK, response_model = str)
+@router.delete("/{teamId}", status_code = status.HTTP_200_OK, response_model = str)
 async def deleteTeam(teamId: str, playerId: str = Depends(getCurrentPlayer)):
-	result = dbClient.players.find_one({"_id": ObjectId(playerId)}, {"teams": 1})
-	if result is None:
-		ex.playerNotFound()
-	result = dbClient.players.update_one(
-    	{"_id": ObjectId(playerId)},
-     	{"$pull": {"teams": {"teamId": ObjectId(teamId)}}})
-	if result.modified_count == 1:
-		return f"Team with id {teamId} was successfully deleted."
-	ex.teamNotFound()
+	LOG.info("Request for deleteTeam.")
+	LOG.debug(f"User: {playerId}. Team: {teamId}")
+	TeamService.deleteTeam(teamId, playerId)
+	LOG.info("Team deleted, response sent.")
+	return "Team successfully deleted."
 
 def checkTeamExistance(teams: list, teamName: str):
 	# Checks if user has another registered team under the same new name

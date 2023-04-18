@@ -10,10 +10,10 @@ oauth2 = OAuth2PasswordBearer(tokenUrl = "login")
 passwordContext = CryptContext(schemes = ["bcrypt"])
 
 def checkUsernameAndPassword(username: str, password: str) -> str:
-	result = dbClient.players.find_one({"email": username}, {"email": 1, "password": 1})
-	if result is None:
+	player = dbClient.players.find_one({"email": username}, {"email": 1, "password": 1})
+	if player is None:
 		ex.wrongCredentials()
-	player = loginPlayerSchema(result)
+	player = loginPlayerSchema(player)
 	if not verifyPassword(password, player.password):
 		ex.wrongCredentials()
 	return player.playerId

@@ -51,11 +51,8 @@ class NewPlayer(PlayerBase):
     @validator("password")
     def passwordValidation(cls, v):
         return passwordCheck(v)
-    
-class UpdatedPlayer(PlayerBase):
-    playerId: str
 
-class PlayerMainInfo(UpdatedPlayer):
+class PlayerMainInfo(PlayerBase):
     playerCreationDateTime: str
     totalGames: int
     totalActions: int

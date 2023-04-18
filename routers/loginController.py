@@ -14,8 +14,6 @@ router = APIRouter(prefix = "/access", tags = ["Login"])
 
 oauth2 = OAuth2PasswordBearer(tokenUrl = "login")
 
-passwordContext = PASSWORD_CONTEXT
-
 TOKEN_LIFE = int(config("ACCESS_TOKEN_EXPIRE_MINUTES"))
 SECRET = config("SECRET")
 ALGORITHM = config("ALGORITHM")
@@ -55,7 +53,7 @@ def createAuthResponse(playerId: str) -> AuthResponse:
 	return AuthResponse(accessToken = token, refreshToken = token2)
 
 def verifyPassword(plainPassword: str, hashedPassword: str):
-	return passwordContext.verify(plainPassword, hashedPassword)
+	return PASSWORD_CONTEXT.verify(plainPassword, hashedPassword)
 
 def decodeToken(token: str):
 	try:

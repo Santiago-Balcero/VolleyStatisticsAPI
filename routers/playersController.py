@@ -1,7 +1,6 @@
 from fastapi import APIRouter, status, Depends
-from routers.loginController import getCurrentPlayer, passwordContext
-from models.playerModels import NewPlayer, Player, PlayerMainInfo, UpdatedPlayer, NewPassword
-from config.db.client import dbClient
+from routers.loginController import getCurrentPlayer
+from models.playerModels import NewPlayer, Player, PlayerMainInfo, PlayerBase, NewPassword
 import services.playersService as PlayerService
 from config.logger.logger import LOG
 
@@ -18,7 +17,8 @@ async def getAllPlayers():
 
 @router.get("/player", status_code = status.HTTP_200_OK, response_model = PlayerMainInfo)
 async def getPlayerById(playerId: str = Depends(getCurrentPlayer)):
-	LOG.info("Request for getPlayerById.")
+	LOG.info(f"Request for getPlayerById.")
+	LOG.debug(f"User: {playerId}.")
 	player: PlayerMainInfo = PlayerService.getPlayerById(playerId)
 	LOG.info("Player info sent as response. Model: PlayerMainInfo.")
 	return player
@@ -27,35 +27,31 @@ async def getPlayerById(playerId: str = Depends(getCurrentPlayer)):
 @router.post("", status_code = status.HTTP_201_CREATED, response_model = str)
 async def createPlayer(player: NewPlayer):
 	LOG.info("Request for createPlayer.")    
-	newPlayer: dict = PlayerService.createPlayer(player)
+	newPlayerId: str = PlayerService.createPlayer(player)
 	LOG.info("New player created, response sent.")
-	return f"Player {newPlayer.firstName} {newPlayer.lastName} successfully registered."
+	LOG.debug("New user: {newPlayerId}.")
+	return f"Player {player.firstName} {player.lastName} successfully registered."
 		
 @router.put("/password", status_code = status.HTTP_200_OK, response_model = str)
 async def updatePassword(newPassword: NewPassword, playerId: str = Depends(getCurrentPlayer)):
 	LOG.info("Request for updatePassword.")
-	LOG.debug(f"New password: {newPassword.newPassword}")
-	if PlayerService.updatePassword(newPassword, playerId):
-		LOG.info("Password updated, response sent.")
-		return "Password successfully changed."
+	LOG.debug(f"User: {playerId}.")
+	PlayerService.updatePassword(newPassword, playerId)
+	LOG.info("Password updated, response sent.")
+	return "Password successfully changed."
 		
 @router.put("", status_code = status.HTTP_200_OK, response_model = str)
-async def updatePlayer(player: UpdatedPlayer, playerId: str = Depends(getCurrentPlayer)):
-	LOG.info("Request for updatePlayer")
-	if PlayerService.updatePlayer(player, playerId):
-		LOG.info("Player updated, response sent.")
-		return f"Player with id {playerId} was successfully updated."
+async def updatePlayer(player: PlayerBase, playerId: str = Depends(getCurrentPlayer)):
+	LOG.info("Request for updatePlayer.")
+	LOG.debug(f"User: {playerId}.")
+	PlayerService.updatePlayer(player, playerId)
+	LOG.info("Player updated, response sent.")
+	return f"Player successfully updated."
 
 @router.delete("/delete", status_code = status.HTTP_200_OK, response_model = str)
 async def deletePlayer(playerId: str = Depends(getCurrentPlayer)):
-	LOG.info("Request for deletePlayer")
-	if PlayerService.deletePlayer(playerId):
-		LOG.info("Player deleted, response sent.")
-		return f"Player with id {playerId} was successfully deleted."
-
-def checkPlayerExistance(email: str) -> bool:
-	try:
-		playerExists = len(list(dbClient.players.find({"email": email})))
-		return playerExists > 0
-	except:
-		return True
+	LOG.info("Request for deletePlayer.")
+	LOG.debug(f"User: {playerId}.")
+	PlayerService.deletePlayer(playerId)
+	LOG.info("Player deleted, response sent.")
+	return f"Player successfully deleted."

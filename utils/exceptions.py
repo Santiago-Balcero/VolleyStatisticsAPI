@@ -90,3 +90,7 @@ def invalidActionAndActionResult() -> Exception:
 def invalidObjectId() -> Exception:
 	LOG.warning("Invalid ObjectId response sent.")
 	raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Invalid ObjectId.")
+
+def noDataConnection(e: str) -> Exception:
+    LOG.warning(f"No connection with database. Error: -> {e}")
+    raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "No connection with database.")

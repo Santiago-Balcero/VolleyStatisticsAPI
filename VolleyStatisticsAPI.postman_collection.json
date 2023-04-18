@@ -23,7 +23,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"firstName\": \"Santiago\",\r\n    \"lastName\": \"Balcero\",\r\n    \"category\": \"Men\",\r\n    \"position\": \"L\",\r\n    \"email\": \"santiago@mail.com\",\r\n    \"password\": \"Insumisi0nazinegu3P\"\r\n}",
+					"raw": "{\r\n    \"firstName\": \"Sa\",\r\n    \"lastName\": \"Bal\",\r\n    \"category\": \"Men\",\r\n    \"position\": \"L\",\r\n    \"email\": \"s@mail.com\",\r\n    \"password\": \"Insumisi0nazinegu3P\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -66,10 +66,20 @@
 		{
 			"name": "Delete Player",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDNmMDQ2NzUyMjIzMzE2ZWRjZDdjMzIiLCJleHAiOjE2ODE4NjYxMDB9.SViwgJV5ciidxKKJIqb7XBKzg_TcEcALCCaRR9O2TNk",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/players/63d558c82e46cab4cd8bc3a7",
+					"raw": "http://localhost:8000/players/delete",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -77,7 +87,7 @@
 					"port": "8000",
 					"path": [
 						"players",
-						"63d558c82e46cab4cd8bc3a7"
+						"delete"
 					]
 				}
 			},
@@ -86,11 +96,21 @@
 		{
 			"name": "Update Player",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDNmMDQ2NzUyMjIzMzE2ZWRjZDdjMzIiLCJleHAiOjE2ODE4NjYxMDB9.SViwgJV5ciidxKKJIqb7XBKzg_TcEcALCCaRR9O2TNk",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"playerId\": \"63d9a7fbc9d6d7fc21466195\",\r\n    \"name\": \"Héctor\",\r\n    \"surname\": \"Balcero\",\r\n    \"category\": \"Men\",\r\n    \"position\": \"S\",\r\n    \"email\": \"hbalcero@mail.com\"\r\n}",
+					"raw": "{\r\n    \"firstName\": \"S\",\r\n    \"lastName\": \"Balc\",\r\n    \"category\": \"Men\",\r\n    \"position\": \"S\",\r\n    \"email\": \"s@mail.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -119,7 +139,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDI4OTNkODQ5YTVkNGFiM2FhMTdlYmEiLCJleHAiOjE2ODAzOTg1MDl9.1dGht7wbyE1fvttJLZLUB2vxOQhFDYzwSaT6ER_E9ls",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDNmMTQ1YzMwNTIzNjg4Y2ZjODBmMTYiLCJleHAiOjE2ODE4Njk5OTV9.hnccieDxqn32QM3ms8RpNE7ugY8HqN3YZHoeGjC-sWo",
 							"type": "string"
 						}
 					]
@@ -128,7 +148,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"teamName\": \"Kika\",\r\n    \"teamCategory\": \"Women\"\r\n}",
+					"raw": "{\r\n    \"teamName\": \"Unal2\",\r\n    \"teamCategory\": \"Mixed\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -158,7 +178,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDI4OTNkODQ5YTVkNGFiM2FhMTdlYmEiLCJleHAiOjE2ODAzOTg1MDl9.1dGht7wbyE1fvttJLZLUB2vxOQhFDYzwSaT6ER_E9ls",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDNmMTQ1YzMwNTIzNjg4Y2ZjODBmMTYiLCJleHAiOjE2ODE4NzIyMzB9.T3nIDLYsGE58Ca3tHxd4eMi0tgTCiBxVia1vygW-_jw",
 							"type": "string"
 						}
 					]
@@ -188,7 +208,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDI4OTNkODQ5YTVkNGFiM2FhMTdlYmEiLCJleHAiOjE2ODAzOTg1MDl9.1dGht7wbyE1fvttJLZLUB2vxOQhFDYzwSaT6ER_E9ls",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDNmMTQ1YzMwNTIzNjg4Y2ZjODBmMTYiLCJleHAiOjE2ODE4Njk5OTV9.hnccieDxqn32QM3ms8RpNE7ugY8HqN3YZHoeGjC-sWo",
 							"type": "string"
 						}
 					]
@@ -213,20 +233,36 @@
 		{
 			"name": "Update Team Name",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDNmMTQ1YzMwNTIzNjg4Y2ZjODBmMTYiLCJleHAiOjE2ODE4NzIyMzB9.T3nIDLYsGE58Ca3tHxd4eMi0tgTCiBxVia1vygW-_jw",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"teamId\": \"643f26f15dca0eb33850b452\",\r\n    \"newTeamName\": \"Unal3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:8000/teams/63d9a7d8c9d6d7fc21466194/63da6c0e90d94b2851311dd4/Santas",
+					"raw": "http://localhost:8000/teams",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
-						"teams",
-						"63d9a7d8c9d6d7fc21466194",
-						"63da6c0e90d94b2851311dd4",
-						"Santas"
+						"teams"
 					]
 				}
 			},
@@ -240,7 +276,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDI4OTNkODQ5YTVkNGFiM2FhMTdlYmEiLCJleHAiOjE2ODAzOTg1MDl9.1dGht7wbyE1fvttJLZLUB2vxOQhFDYzwSaT6ER_E9ls",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDNmMTQ1YzMwNTIzNjg4Y2ZjODBmMTYiLCJleHAiOjE2ODE4Njk5OTV9.hnccieDxqn32QM3ms8RpNE7ugY8HqN3YZHoeGjC-sWo",
 							"type": "string"
 						}
 					]
@@ -248,7 +284,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/teams/6428a460ecb0b8b863b94f15",
+					"raw": "http://localhost:8000/teams/643f26f15dca0eb33850b452",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -256,7 +292,7 @@
 					"port": "8000",
 					"path": [
 						"teams",
-						"6428a460ecb0b8b863b94f15"
+						"643f26f15dca0eb33850b452"
 					]
 				}
 			},
@@ -265,10 +301,20 @@
 		{
 			"name": "Delete Team",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDNmMTQ1YzMwNTIzNjg4Y2ZjODBmMTYiLCJleHAiOjE2ODE4NzIyMzB9.T3nIDLYsGE58Ca3tHxd4eMi0tgTCiBxVia1vygW-_jw",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/teams/63d9a7d8c9d6d7fc21466194/63d9a99cf51c4af870546401",
+					"raw": "http://localhost:8000/teams/643f26f15dca0eb33850b452",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -276,8 +322,7 @@
 					"port": "8000",
 					"path": [
 						"teams",
-						"63d9a7d8c9d6d7fc21466194",
-						"63d9a99cf51c4af870546401"
+						"643f26f15dca0eb33850b452"
 					]
 				}
 			},
@@ -458,7 +503,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDI4OTNkODQ5YTVkNGFiM2FhMTdlYmEiLCJleHAiOjE2ODAzOTg1MDl9.1dGht7wbyE1fvttJLZLUB2vxOQhFDYzwSaT6ER_E9ls",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDNmMDQ2NzUyMjIzMzE2ZWRjZDdjMzIiLCJleHAiOjE2ODE4NjU5ODZ9.05bSVtVjJzuIupgqgtWqmui-7Gib6fwlJTXn9GVr3Yw",
 							"type": "string"
 						}
 					]
@@ -499,7 +544,7 @@
 					"formdata": [
 						{
 							"key": "username",
-							"value": "santiago@mail.com",
+							"value": "s@mail.com",
 							"type": "text"
 						},
 						{
@@ -531,7 +576,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n     \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDI4OTNkODQ5YTVkNGFiM2FhMTdlYmEiLCJleHAiOjE2ODEzOTgwMDB9.0cgKG7ZQa2-umblk2Ith-euEbZxQXTf-1mG42YIuvLg\"\r\n}",
+					"raw": "{\r\n     \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDI4OTNkODQ5YTVkNGFiM2FhMTdlYmEiLCJleHAiOjE2ODEzOTk2Nzl9.EAMWr8_ujHk5pw0qgEd5e36kvLcQ5PhcjH9oRfNZnFI\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

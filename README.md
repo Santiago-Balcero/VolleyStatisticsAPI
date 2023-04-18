@@ -9,8 +9,8 @@
 # TO DO
 - Create service layer for access to data
 - Test all endpoints then export postman collection
-- In update game statistics add a way to update also Player statistics
 - Add logging to all API
+- In update game statistics add a way to update also Player statistics
 - When creating a new game add a 1 to total Games in Player statistics
 - Previous two things also for teams scope????
 - Parametric texts for constants, get them from DB
