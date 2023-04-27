@@ -45,7 +45,7 @@ async def createTeam(newTeam: Team, playerId: str = Depends(getCurrentPlayer)):
 async def updateTeamName(updatedTeam: UpdatedTeam, playerId: str = Depends(getCurrentPlayer)):
 	LOG.info("Request for updateTeamName.")
 	LOG.debug(f"User: {playerId}. Team: {updatedTeam.teamId}")
-	TeamService.updateTeamName(updatedTeam, playerId)
+	TeamService.updateTeamName(updatedTeam)
 	LOG.info("Team updated, response sent.")
 	return f"Team changed it's name to {updatedTeam.newTeamName}."
 				

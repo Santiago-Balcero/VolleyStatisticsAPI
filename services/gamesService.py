@@ -16,7 +16,8 @@ def getGameById(gameId: str) -> Game:
 	try:
 		game: Game = gameFromPlayer(dbClient.players.find_one(
 														{"teams.games.gameId": ObjectId(gameId)}, 
-														{"teams.games": 1}))
+														{"teams.games": 1}), 
+                              		gameId)
 	except Exception as e:
 		ex.noDataConnection("getGameById/find_one", e)
 	if game is None:
@@ -68,6 +69,7 @@ def playGame(gameAction: GameAction) -> Game:
 	checkForExistingGame(gameAction.gameId)
 	checkIfGameIsActive(gameAction.gameId)
 	checkForValidActionAndActionResult(gameAction.action, gameAction.actionResult)
+	print("GAME ID", gameAction.gameId)
 	try:
 		# REGISTER ACTION: Updates action in DB
 		# Is different form updateStatistics method if something goes wrong then
@@ -80,7 +82,8 @@ def playGame(gameAction: GameAction) -> Game:
 															{"t.teamId": ObjectId(gameAction.teamId)}, 
 															{"g.gameId": ObjectId(gameAction.gameId)}], 
 														projection = {"teams.games": 1}, 
-														return_document = ReturnDocument.AFTER))
+														return_document = ReturnDocument.AFTER), 
+                              		gameAction.gameId)
 	except Exception as e:
 		ex.noDataConnection("playGame/find_one_and_update/register_action", e)
 	if game is None:
@@ -96,7 +99,8 @@ def playGame(gameAction: GameAction) -> Game:
 															{"t.teamId": ObjectId(gameAction.teamId)}, 
 															{"g.gameId": ObjectId(gameAction.gameId)}], 
 														projection = {"teams.games": 1}, 
-														return_document = ReturnDocument.AFTER))
+														return_document = ReturnDocument.AFTER), 
+                              		gameAction.gameId)
 	except Exception as e:
 		ex.noDataConnection("playGame/find_one_and_update/updated_statistics", e)
 	if game is None:
@@ -104,51 +108,26 @@ def playGame(gameAction: GameAction) -> Game:
 	return game
 
 def updateGameStatistics(game: Game) -> dict:
-
 	game.gameId = ObjectId(game.gameId)
- 
-	
-	
-	# Transforms Game to dict to better work with this method
-	game: dict = dict(game)
-
-	for action in GAME_ACTIONS:
-		if action in ("attack", "block", "service"):
-			bestResult: str = "Points"
-		else:
-			bestResult: str = "Perfects"
-		game[f"total{action.title()}s"] = game[f"{action}{bestResult}"] \
-										+ game[f"{action}Neutrals"] \
-										+ game[f"{action}Errors"]
-		game[f"{action}Effectiveness"] = round(game[f"{action}{bestResult}"] \
-										/ game[f"total{action.title()}s"], 2) \
-										if game[f"total{action.title()}s"] > 0 else 0.00
-	for actionResult in ACTION_RESULTS:
-		actionResult = actionResult.title()
-		if actionResult == "Point":
-			game[f"total{actionResult}s"] = game[f"attack{actionResult}s"] \
-										+ game[f"block{actionResult}s"] \
-										+ game[f"service{actionResult}s"]
-		elif actionResult == "Perfect":
-			game[f"total{actionResult}s"] = game[f"defense{actionResult}s"] \
-										+ game[f"reception{actionResult}s"] \
-										+ game[f"set{actionResult}s"]
-		else:
-			game[f"total{actionResult}s"] = game[f"attack{actionResult}s"] \
-										+ game[f"block{actionResult}s"] \
-										+ game[f"service{actionResult}s"] \
-						  				+ game[f"defense{actionResult}s"] \
-								  		+ game[f"reception{actionResult}s"] \
-										+ game[f"set{actionResult}s"]
-	game["totalActions"] = game["totalPoints"] \
-						+ game["totalPerfects"] \
-						+ game["totalNeutrals"] \
-					  	+ game["totalErrors"]
-	game["totalEffectiveness"] = round((game["totalPoints"] \
-								+ game["totalPerfects"]) \
-				  				/ (game["totalActions"]), 2) \
-						  		if game["totalActions"] > 0 else 0.00
-	return game
+	game.totalAttacks = game.attackPoints + game.attackNeutrals + game.attackErrors
+	game.attackEffectiveness = round(game.attackPoints / game.totalAttacks, 2) if game.totalAttacks > 0 else 0.00
+	game.totalBlocks = game.blockPoints + game.blockNeutrals + game.blockErrors
+	game.blockEffectiveness = round(game.blockPoints / game.totalBlocks, 2) if game.totalBlocks > 0 else 0.00
+	game.totalServices = game.servicePoints + game.serviceNeutrals + game.serviceErrors
+	game.serviceEffectiveness = round(game.servicePoints / game.totalServices, 2) if game.totalServices > 0 else 0.00
+	game.totalDefenses = game.defensePerfects + game.defenseNeutrals + game.defenseErrors
+	game.defenseEffectiveness =  round(game.defensePerfects / game.totalDefenses, 2) if game.totalDefenses > 0 else 0.00
+	game.totalReceptions = game.receptionPerfects + game.receptionNeutrals + game.receptionErrors
+	game.receptionEffectiveness = round(game.receptionPerfects / game.totalReceptions, 2) if game.totalReceptions > 0 else 0.00
+	game.totalSets = game.setPerfects + game.setNeutrals + game.setErrors
+	game.setEffectiveness = round(game.setPerfects / game.totalSets, 2) if game.totalSets > 0 else 0.00
+	game.totalPoints = game.attackPoints + game.blockPoints + game.servicePoints
+	game.totalPerfects = game.defensePerfects + game.receptionPerfects + game.setPerfects
+	game.totalNeutrals = game.attackNeutrals + game.blockNeutrals + game.serviceNeutrals + game.defenseNeutrals + game.receptionNeutrals + game.setNeutrals
+	game.totalErrors = game.attackErrors + game.blockErrors + game.serviceErrors + game.defenseErrors + game.receptionErrors + game.setErrors
+	game.totalActions = game.totalPoints + game.totalPerfects + game.totalNeutrals + game.totalErrors
+	game.totalEffectiveness = round((game.totalPoints + game.totalPerfects) / game.totalActions, 2) if game.totalActions > 0 else 0.00
+	return dict(game)
 	
 def checkForExistingTeam(teamId: str) -> None:
 	if not ObjectId.is_valid(teamId):
@@ -181,7 +160,8 @@ def checkIfGameIsActive(gameId: str):
 	try:
 		game: Game = gameFromPlayer(dbClient.players.find_one(
 														{"teams.games.gameId": ObjectId(gameId)}, 
-														{"teams.games": 1}))
+														{"teams.games": 1}), 
+                              		gameId)
 	except Exception as e:
 		ex.noDataConnection("checkIfGameIsActive/find_one", e)
 	if game.gameId == gameId and game.status == 0:

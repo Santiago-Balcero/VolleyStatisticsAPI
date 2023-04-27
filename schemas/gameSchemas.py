@@ -1,3 +1,4 @@
+from bson import ObjectId
 from models.gameModels import Game
    
 def fullGame(game: dict) -> Game:
@@ -53,8 +54,12 @@ def fullGame(game: dict) -> Game:
 def fullGames(games: list[dict]) -> list[Game]:
     return [fullGame(game) for game in games]
 
-def gameFromPlayer(player: dict) -> Game:
+def gameFromPlayer(player: dict, gameId: str) -> Game:
     if player is None:
         return None
-    return fullGame(player["teams"][0]["games"][0])
+    for team in player["teams"]:
+        for game in team["games"]:
+            if game["gameId"] == ObjectId(gameId):
+                return fullGame(game)
+    return None
     

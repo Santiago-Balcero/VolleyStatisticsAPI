@@ -61,7 +61,7 @@ def createTeam(newTeam: Team, playerId: str) -> bool:
 		ex.unableToCreateTeam()
 	return True
 
-def updateTeamName(updatedTeam: UpdatedTeam, playerId: str) -> bool:
+def updateTeamName(updatedTeam: UpdatedTeam) -> bool:
 	try:
 		teams: list[Team] = teamsFromPlayer(dbClient.players.find_one(
 																{"teams.teamId": ObjectId(updatedTeam.teamId)}, 
