@@ -7,7 +7,7 @@ from schemas.gameSchemas import gameFromPlayer
 from schemas.teamSchemas import teamsFromPlayer
 from utils import exceptions as ex
 import services.teamsService as TeamService
-from utils.constants import GAME_ACTIONS, ACTION_RESULTS
+from utils.constants import GAME_ACTIONS
 from config.logger.logger import LOG
 
 def getGameById(gameId: str) -> Game:
@@ -19,7 +19,7 @@ def getGameById(gameId: str) -> Game:
 														{"teams.games": 1}), 
                               		gameId)
 	except Exception as e:
-		ex.noDataConnection("getGameById/find_one", e)
+		ex.noDataConnection("gamesService/getGameById/find_one", e)
 	if game is None:
 		ex.gameNotFound()
 	return game
@@ -30,26 +30,30 @@ def createGame(teamId: str, newGame: Game, playerId: str) -> bool:
 																{"teams.teamId": ObjectId(teamId)}, 
 																{"teams": 1}))
 	except Exception as e:
-		ex.noDataConnection("createGame/find_one", e)
+		ex.noDataConnection("teamsService/createGame/find_one", e)
 	if teams is None:
 		ex.teamNotFound()
-	checkForExistingTeam(teamId)
+	TeamService.checkForExistingTeam(teamId)
 	# Can´t begin a new match if there are others that have not finished yet
 	checkForActiveGames(teams)
+	newGame.gameId = ObjectId()
+	while not validateGameId(newGame.gameId):
+		LOG.debug("Repeated gameId in DB, trying again with new value.")
+		newGame.gameId = ObjectId()
 	gameDict: dict = dict(newGame)
 	try:
 		result = dbClient.players.update_one(
 									{"teams": {"$elemMatch": {"teamId": ObjectId(teamId)}}}, 
 									{"$push": {"teams.$.games": gameDict}})
 	except Exception as e:
-		ex.noDataConnection("createGame/update_one", e)
+		ex.noDataConnection("teamsService/createGame/update_one", e)
 	if result.modified_count != 1:
 		ex.unableToCreateGame()
 	TeamService.sumTeamGames(teamId, playerId)
 	return True
 
 def finishGame(gameToFinish: EndGame) -> bool:
-	checkForExistingTeam(gameToFinish.teamId)
+	TeamService.checkForExistingTeam(gameToFinish.teamId)
 	checkForExistingGame(gameToFinish.gameId)
 	try:
 		result = dbClient.players.update_one(
@@ -59,17 +63,16 @@ def finishGame(gameToFinish: EndGame) -> bool:
 										{"t.teamId": ObjectId(gameToFinish.teamId)}, 
 										{"g.gameId": ObjectId(gameToFinish.gameId)}])
 	except Exception as e:
-		ex.noDataConnection("finishGame/update_one", e)
+		ex.noDataConnection("teamsService/finishGame/update_one", e)
 	if result.modified_count != 1:
 		ex.gameAlreadyFinished()
 	return True
 
-def playGame(gameAction: GameAction) -> Game:
-	checkForExistingTeam(gameAction.teamId)
+def playGame(gameAction: GameAction, playerId: str) -> Game:
+	TeamService.checkForExistingTeam(gameAction.teamId)
 	checkForExistingGame(gameAction.gameId)
 	checkIfGameIsActive(gameAction.gameId)
 	checkForValidActionAndActionResult(gameAction.action, gameAction.actionResult)
-	print("GAME ID", gameAction.gameId)
 	try:
 		# REGISTER ACTION: Updates action in DB
 		# Is different form updateStatistics method if something goes wrong then
@@ -85,10 +88,11 @@ def playGame(gameAction: GameAction) -> Game:
 														return_document = ReturnDocument.AFTER), 
                               		gameAction.gameId)
 	except Exception as e:
-		ex.noDataConnection("playGame/find_one_and_update/register_action", e)
+		ex.noDataConnection("teamsService/playGame/find_one_and_update/registerAction", e)
 	if game is None:
 		ex.unableToUpdateGame()
-	updatedGameDict = updateGameStatistics(game)
+	game = updateGameStatistics(game)
+	updatedGameDict: dict = dict(game)
 	try:
 		# UPDATED STATISTICS: Updates whole game with updated statistics
 		game: Game = gameFromPlayer(dbClient.players.find_one_and_update(
@@ -102,12 +106,13 @@ def playGame(gameAction: GameAction) -> Game:
 														return_document = ReturnDocument.AFTER), 
                               		gameAction.gameId)
 	except Exception as e:
-		ex.noDataConnection("playGame/find_one_and_update/updated_statistics", e)
+		ex.noDataConnection("teamsService/playGame/find_one_and_update/updatedStatistics", e)
 	if game is None:
 		ex.unableToUpdateGame()
+	TeamService.registerGameAction(gameAction, playerId)
 	return game
 
-def updateGameStatistics(game: Game) -> dict:
+def updateGameStatistics(game: Game) -> Game:
 	game.gameId = ObjectId(game.gameId)
 	game.totalAttacks = game.attackPoints + game.attackNeutrals + game.attackErrors
 	game.attackEffectiveness = round(game.attackPoints / game.totalAttacks, 2) if game.totalAttacks > 0 else 0.00
@@ -127,24 +132,13 @@ def updateGameStatistics(game: Game) -> dict:
 	game.totalErrors = game.attackErrors + game.blockErrors + game.serviceErrors + game.defenseErrors + game.receptionErrors + game.setErrors
 	game.totalActions = game.totalPoints + game.totalPerfects + game.totalNeutrals + game.totalErrors
 	game.totalEffectiveness = round((game.totalPoints + game.totalPerfects) / game.totalActions, 2) if game.totalActions > 0 else 0.00
-	return dict(game)
-	
-def checkForExistingTeam(teamId: str) -> None:
-	if not ObjectId.is_valid(teamId):
-		ex.invalidObjectId("team")
-	try:
-		team: int = dbClient.players.count_documents({"teams.teamId": ObjectId(teamId)})
-	except Exception as e:
-		ex.noDataConnection("checkForExistingTeam/count_documents", e)
-	if team != 1:
-		ex.teamNotFound()
-	LOG.debug(f"Team found: {teamId}.")
+	return game
   
 def checkForExistingGame(gameId: str) -> None:
 	try:
 		game: int = dbClient.players.count_documents({"teams.games.gameId": ObjectId(gameId)})
 	except Exception as e:
-		ex.noDataConnection("checkForExistingGame/count_documents", e)
+		ex.noDataConnection("teamsService/checkForExistingGame/count_documents", e)
 	if game != 1:
 		ex.gameNotFound()
 	LOG.debug(f"Game found: {gameId}.")
@@ -163,7 +157,7 @@ def checkIfGameIsActive(gameId: str):
 														{"teams.games": 1}), 
                               		gameId)
 	except Exception as e:
-		ex.noDataConnection("checkIfGameIsActive/find_one", e)
+		ex.noDataConnection("teamsService/checkIfGameIsActive/find_one", e)
 	if game.gameId == gameId and game.status == 0:
 		ex.gameAlreadyFinished()
 	LOG.debug(f"Game is still active.")
@@ -176,3 +170,20 @@ def checkForValidActionAndActionResult(action: str, actionResult: str):
 	elif action in GAME_ACTIONS[3:]:
 		if actionResult == "Points":
 			ex.invalidActionAndActionResult()
+   
+def validateGameId(id: ObjectId) -> bool:
+	# Checks if id exists as a teamId in DB
+	try:
+		count: int = dbClient.players.count_documents({"teams.teamId": id})
+	except Exception as e:
+		ex.noDataConnection("gamesService/validateGameId/count_documents/teams", e)
+	if count > 0:
+		return False
+	# Checks if id exists as a gameId in DB
+	try:
+		count: int = dbClient.players.count_documents({"teams.games.gameId": id})
+	except Exception as e:
+		ex.noDataConnection("gamesServices/validateGameId/count_documents/games", e)
+	if count > 0:
+		return False
+	return True

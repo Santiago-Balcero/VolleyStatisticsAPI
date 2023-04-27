@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Depends
 from routers.loginController import getCurrentPlayer
-from models.playerModels import NewPlayer, Player, PlayerMainInfo, PlayerBase, NewPassword
+from models.playerModels import NewPlayer, Player, PlayerBase, NewPassword
 import services.playersService as PlayerService
 from config.logger.logger import LOG
 
@@ -15,12 +15,12 @@ async def getAllPlayers():
 	LOG.info("List of players sent as response. Model: Player.")
 	return players
 
-@router.get("/player", status_code = status.HTTP_200_OK, response_model = PlayerMainInfo)
+@router.get("/player", status_code = status.HTTP_200_OK, response_model = Player)
 async def getPlayerById(playerId: str = Depends(getCurrentPlayer)):
 	LOG.info(f"Request for getPlayerById.")
 	LOG.debug(f"User: {playerId}.")
-	player: PlayerMainInfo = PlayerService.getPlayerById(playerId)
-	LOG.info("Player info sent as response. Model: PlayerMainInfo.")
+	player: Player = PlayerService.getPlayerById(playerId)
+	LOG.info("Player info sent as response. Model: Player.")
 	return player
 
 # Does not depend on AUTH through Depends(getCurrentPlayer) because this is used for creating new account

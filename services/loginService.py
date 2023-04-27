@@ -14,7 +14,7 @@ def checkUsernameAndPassword(username: str, password: str) -> str:
 	try:
 		player: LoginPlayer = loginPlayer(dbClient.players.find_one({"email": username}, {"email": 1, "password": 1}))
 	except Exception as e:
-		ex.noDataConnection("checkUsernameAndPassword/find_one", e)
+		ex.noDataConnection("loginService/checkUsernameAndPassword/find_one", e)
 	if player is None:
 		ex.wrongCredentials()
 	if not verifyPassword(password, player.password):
@@ -25,7 +25,7 @@ def checkIfPlayerExists(playerId: str) -> bool:
 	try:
 		result: int = dbClient.players.count_documents({"_id": ObjectId(playerId)})
 	except Exception as e:
-		ex.noDataConnection("checkIfPlayerExists/find_one", e)
+		ex.noDataConnection("loginService/checkIfPlayerExists/find_one", e)
 	if result != 1:
 		return False
 	return True

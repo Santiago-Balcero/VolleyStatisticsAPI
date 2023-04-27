@@ -35,6 +35,6 @@ async def finishGame(gameToFinish: EndGame, playerId: str = Depends(getCurrentPl
 async def playGame(gameAction: GameAction, playerId: str = Depends(getCurrentPlayer)):
     LOG.info("Request for playGame.")
     LOG.debug(f"User: {playerId}. Team: {gameAction.teamId}. Game: {gameAction.gameId}.")
-    game: Game = GameService.playGame(gameAction)
+    game: Game = GameService.playGame(gameAction, playerId)
     LOG.info("Game updated, response sent. Model: Game.")
     return game		

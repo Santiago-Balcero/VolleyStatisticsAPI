@@ -5,7 +5,7 @@ from utils import exceptions as ex
 from bson import ObjectId
 
 class Game(BaseModel):
-	gameId: str = ObjectId()
+	gameId: str = None
 	gameDateTime: datetime = datetime.now()
 	status: int = 1 # 1 for active game, 0 for finished game
 	gameCountry: str
@@ -43,11 +43,11 @@ class Game(BaseModel):
 	setErrors: int = 0
 	totalSets: int = 0
 	setEffectiveness: float = 0.00
-	totalActions: int = 0
 	totalPoints: int = 0
 	totalPerfects: int = 0
 	totalNeutrals: int = 0
 	totalErrors: int = 0
+	totalActions: int = 0
 	totalEffectiveness: float = 0.00
 	
 	@validator("gameCountry")

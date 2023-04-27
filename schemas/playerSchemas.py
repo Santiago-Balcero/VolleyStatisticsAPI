@@ -1,24 +1,5 @@
 from schemas.teamSchemas import fullTeams
-from models.playerModels import Player, PlayerMainInfo, LoginPlayer
-
-# Schema used for data update operations of one player
-def mainInfoPlayer(player: dict) -> PlayerMainInfo:
-    return PlayerMainInfo(**({
-        "playerId": str(player["_id"]),
-        "firstName": player["firstName"],
-        "lastName": player["lastName"],
-        "category": player["category"],
-        "position": player["position"],
-        "email": player["email"],
-        "playerCreationDateTime": player["playerCreationDateTime"],
-        "totalGames": player["totalGames"],
-        "totalActions": player["totalActions"],
-        "totalPoints": player["totalPoints"],
-        "totalPerfects": player["totalPerfects"],
-        "totalNeutrals": player["totalNeutrals"],
-        "totalErrors": player["totalErrors"],
-        "totalEffectiveness": player["totalEffectiveness"]
-    }))
+from models.playerModels import Player, LoginPlayer
 
 def loginPlayer(player: dict) -> LoginPlayer:
     if player is None:
@@ -31,6 +12,8 @@ def loginPlayer(player: dict) -> LoginPlayer:
 
 # Returns entire Player object
 def fullPlayer(player: dict) -> Player:
+    if player is None:
+        return None
     return Player(**({
         "playerId": str(player["_id"]),
         "firstName": player["firstName"],
@@ -39,12 +22,43 @@ def fullPlayer(player: dict) -> Player:
         "position": player["position"],
         "email": player["email"],
         "teams": fullTeams(player["teams"]) if len(player["teams"]) > 0 else [],
+        "totalTeams": player["totalTeams"],
+        "attackPoints": player["attackPoints"],
+        "attackNeutrals": player["attackNeutrals"],
+        "attackErrors": player["attackErrors"],
+        "totalAttacks": player["totalAttacks"],
+        "attackEffectiveness": player["attackEffectiveness"],
+        "blockPoints": player["blockPoints"],
+        "blockNeutrals": player["blockNeutrals"],
+        "blockErrors": player["blockErrors"],
+        "totalBlocks": player["totalBlocks"],
+        "blockEffectiveness": player["blockEffectiveness"],
+        "servicePoints": player["servicePoints"],
+        "serviceNeutrals": player["serviceNeutrals"],
+        "serviceErrors": player["serviceErrors"],
+        "totalServices": player["totalServices"],
+        "serviceEffectiveness": player["serviceEffectiveness"],
+        "defensePerfects": player["defensePerfects"],
+        "defenseNeutrals": player["defenseNeutrals"],
+        "defenseErrors": player["defenseErrors"],
+        "totalDefenses": player["totalDefenses"],
+        "defenseEffectiveness": player["defenseEffectiveness"],
+        "receptionPerfects": player["receptionPerfects"],
+        "receptionNeutrals": player["receptionNeutrals"],
+        "receptionErrors": player["receptionErrors"],
+        "totalReceptions": player["totalReceptions"],
+        "receptionEffectiveness": player["receptionEffectiveness"],
+        "setPerfects": player["setPerfects"],
+        "setNeutrals": player["setNeutrals"],
+        "setErrors": player["setErrors"],
+        "totalSets": player["totalSets"],
+        "setEffectiveness": player["setEffectiveness"],
         "totalGames": player["totalGames"],
-        "totalActions": player["totalActions"],
         "totalPoints": player["totalPoints"],
         "totalPerfects": player["totalPerfects"],
         "totalNeutrals": player["totalNeutrals"],
         "totalErrors": player["totalErrors"],
+        "totalActions": player["totalActions"],
         "totalEffectiveness": player["totalEffectiveness"],
         "playerCreationDateTime": player["playerCreationDateTime"]
     }))
