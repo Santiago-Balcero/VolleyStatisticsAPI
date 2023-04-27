@@ -29,7 +29,7 @@ async def createPlayer(player: NewPlayer):
 	LOG.info("Request for createPlayer.")    
 	newPlayerId: str = PlayerService.createPlayer(player)
 	LOG.info("New player created, response sent.")
-	LOG.debug("New user: {newPlayerId}.")
+	LOG.debug(f"New user: {newPlayerId}.")
 	return f"Player {player.firstName} {player.lastName} successfully registered."
 		
 @router.put("/password", status_code = status.HTTP_200_OK, response_model = str)

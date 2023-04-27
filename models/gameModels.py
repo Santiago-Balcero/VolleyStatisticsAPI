@@ -4,7 +4,10 @@ from utils.constants import ACTION_RESULTS, GAME_ACTIONS, GAME_POSITIONS
 from utils import exceptions as ex
 from bson import ObjectId
 
-class NewGame(BaseModel):
+class Game(BaseModel):
+	gameId: str = ObjectId()
+	gameDateTime: datetime = datetime.now()
+	status: int = 1 # 1 for active game, 0 for finished game
 	gameCountry: str
 	gameCity: str
 	opponentTeam: str # value: "Random" for when is non serious game
@@ -82,47 +85,6 @@ class NewGame(BaseModel):
 			raise ValueError("Invalid player number.")
 		return v
 
-class Game(NewGame):
-	gameId: str
-	gameDateTime: datetime
-	status: int # 1 for active game, 0 for finished game
-	attackPoints: int = 0
-	attackNeutrals: int = 0
-	attackErrors: int = 0
-	totalAttacks: int = 0
-	attackEffectiveness: float = 0.00
-	blockPoints: int = 0
-	blockNeutrals: int = 0
-	blockErrors: int = 0
-	totalBlocks: int = 0
-	blockEffectiveness: float = 0.00
-	servicePoints: int = 0
-	serviceNeutrals:int = 0
-	serviceErrors: int = 0
-	totalServices: int = 0
-	serviceEffectiveness: float = 0.00
-	defensePerfects: int = 0
-	defenseNeutrals: int = 0
-	defenseErrors: int = 0
-	totalDefenses: int = 0
-	defenseEffectiveness: float = 0.00
-	receptionPerfects: int = 0
-	receptionNeutrals: int = 0
-	receptionErrors: int = 0
-	totalReceptions: int = 0
-	receptionEffectiveness: float = 0.00
-	setPerfects: int = 0
-	setNeutrals: int = 0
-	setErrors: int = 0
-	totalSets: int = 0
-	setEffectiveness: float = 0.00
-	totalActions: int = 0
-	totalPoints: int = 0
-	totalPerfects: int = 0
-	totalNeutrals: int = 0
-	totalErrors: int = 0
-	totalEffectiveness: float = 0.00
-	
 class EndGame(BaseModel):
 	teamId: str
 	gameId: str
@@ -130,13 +92,13 @@ class EndGame(BaseModel):
 	@validator("teamId")
 	def teamIdValidation(cls, v):
 		if not ObjectId.is_valid(v):
-			ex.invalidObjectId()
+			ex.invalidObjectId("team")
 		return v
 
 	@validator("gameId")
 	def gameIdValidation(cls, v):
 		if not ObjectId.is_valid(v):
-			ex.invalidObjectId()
+			ex.invalidObjectId("game")
 		return v
 
 class GameAction(EndGame):

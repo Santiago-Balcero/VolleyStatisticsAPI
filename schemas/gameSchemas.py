@@ -1,28 +1,8 @@
 from models.gameModels import Game
-
-def gameMainInfoSchema(game) -> dict:
-    return {
-        "gameId": str(game["gameId"]),
-        "gameDateTime": game["gameDateTime"],
-        "gameCountry": game["gameCountry"],
-        "gameCity": game["gameCity"],
-        "status": game["status"],
-        "opponentTeam": game["opponentTeam"]
-    }
-    
-def teamGamesMainInfoSchema(games):
-    return [gameMainInfoSchema(game) for game in games]
-
-def teamGamesSchema(team):
-    return teamGamesMainInfoSchema(team["games"])
-
-def playerGamesSchema(player):
-    games = []
-    for team in player["teams"]:
-        games += (teamGamesSchema(team))
-    return games
-
-def fullGameSchema(game) -> Game:
+   
+def fullGame(game: dict) -> Game:
+    if game is None:
+        return None
     return Game(**({
         "gameId": str(game["gameId"]),
         "gameDateTime": game["gameDateTime"],
@@ -70,6 +50,11 @@ def fullGameSchema(game) -> Game:
         "totalEffectiveness": game["totalEffectiveness"]
     }))
 
-def fullGameSchemas(games) -> list[Game]:
-    [fullGameSchema(game) for game in games]
+def fullGames(games: list[dict]) -> list[Game]:
+    return [fullGame(game) for game in games]
+
+def gameFromPlayer(player: dict) -> Game:
+    if player is None:
+        return None
+    return fullGame(player["teams"][0]["games"][0])
     

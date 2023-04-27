@@ -1,11 +1,7 @@
 from fastapi import APIRouter, status, Depends
 from routers.loginController import getCurrentPlayer
-from models.teamModels import Team, NewTeam, UpdatedTeam
-from schemas.teamSchemas import fullTeamSchema, fullTeamSchemas, allTeamsSchemas
-from bson import ObjectId
-from datetime import datetime
+from models.teamModels import Team, UpdatedTeam
 from utils import exceptions as ex
-from config.db.client import dbClient
 import services.teamsService as TeamService
 from config.logger.logger import LOG
 
@@ -28,21 +24,21 @@ async def getTeamsByPlayer(playerId: str = Depends(getCurrentPlayer)):
 	LOG.info("List of teams sent as response. Model: Team.")
 	return teams
  
-
 @router.get("/{teamId}", status_code = status.HTTP_200_OK, response_model = Team)
 async def getTeamById(teamId: str, playerId: str = Depends(getCurrentPlayer)):
 	LOG.info("Request for getTeamById.")
 	LOG.debug(f"User: {playerId}. Team: {teamId}.")
-	team = TeamService.getTeamById(teamId)
+	team: Team = TeamService.getTeamById(teamId)
 	LOG.info("Team info sent as response. Model: Team.")
 	return team
 
 @router.post("/newTeam", status_code = status.HTTP_201_CREATED, response_model = str)
-async def createTeam(newTeam: NewTeam, playerId: str = Depends(getCurrentPlayer)):
+async def createTeam(newTeam: Team, playerId: str = Depends(getCurrentPlayer)):
 	LOG.info("Request for createTeam.")
 	LOG.debug(f"User: {playerId}.")
 	TeamService.createTeam(newTeam, playerId)
 	LOG.info("New team created, response sent.")
+	LOG.debug(f"New team: {newTeam.teamId}.") 
 	return f"Team {newTeam.teamName} successfully registered."
 
 @router.put("", status_code = status.HTTP_200_OK, response_model = str)

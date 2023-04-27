@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, validator, EmailStr
 from models.teamModels import Team
 from utils.constants import PLAYER_POSITIONS, PLAYER_CATEGORIES
@@ -47,13 +48,15 @@ class NewPlayer(PlayerBase):
     totalNeutrals: int = 0
     totalErrors: int = 0
     totalEffectiveness: float = 0.00
+    playerCreationDateTime: datetime = datetime.now()
+    teams: list[Team] = []
     
     @validator("password")
     def passwordValidation(cls, v):
         return passwordCheck(v)
 
 class PlayerMainInfo(PlayerBase):
-    playerCreationDateTime: str
+    playerCreationDateTime: datetime
     totalGames: int
     totalActions: int
     totalPoints: int
@@ -69,7 +72,7 @@ class LoginPlayer(BaseModel):
     playerId: str
     email: str
     password: str
-    
+
 class NewPassword(BaseModel):
 	newPassword: str
 	

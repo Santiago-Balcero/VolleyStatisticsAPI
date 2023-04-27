@@ -4,9 +4,18 @@ from models.gameModels import Game
 from utils.constants import TEAM_CATEGORIES
 from datetime import datetime
 
-class NewTeam(BaseModel):
+class Team(BaseModel):
+	teamId: str = ObjectId()
 	teamName: str
 	teamCategory: str
+	games: list[Game] = []
+	totalActions: int = 0
+	totalPoints: int = 0
+	totalPerfects: int = 0
+	totalNeutrals: int = 0
+	totalErrors: int = 0
+	totalEffectiveness: float = 0.00
+	teamCreationDateTime: datetime = datetime.now()
 	
 	@validator("teamName")
 	def teamNameValidation(cls, v):
@@ -18,12 +27,7 @@ class NewTeam(BaseModel):
 		if v not in TEAM_CATEGORIES:
 			raise ValueError("Invalid team category.")
 		return v
-	
-class Team(NewTeam):
-	teamId: str
-	games: list[Game]
-	teamCreationDateTime: str
-	
+
 class UpdatedTeam(BaseModel):
 	teamId: str
 	newTeamName: str

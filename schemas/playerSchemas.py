@@ -1,8 +1,8 @@
-from schemas.teamSchemas import fullTeamSchemas
+from schemas.teamSchemas import fullTeams
 from models.playerModels import Player, PlayerMainInfo, LoginPlayer
 
 # Schema used for data update operations of one player
-def mainInfoPlayerSchema(player: dict) -> PlayerMainInfo:
+def mainInfoPlayer(player: dict) -> PlayerMainInfo:
     return PlayerMainInfo(**({
         "playerId": str(player["_id"]),
         "firstName": player["firstName"],
@@ -10,8 +10,7 @@ def mainInfoPlayerSchema(player: dict) -> PlayerMainInfo:
         "category": player["category"],
         "position": player["position"],
         "email": player["email"],
-        # Sends only date, not time, to PlayerMainInfo object
-        "playerCreationDateTime": str(player["playerCreationDateTime"]).split(" ")[0],
+        "playerCreationDateTime": player["playerCreationDateTime"],
         "totalGames": player["totalGames"],
         "totalActions": player["totalActions"],
         "totalPoints": player["totalPoints"],
@@ -21,7 +20,9 @@ def mainInfoPlayerSchema(player: dict) -> PlayerMainInfo:
         "totalEffectiveness": player["totalEffectiveness"]
     }))
 
-def loginPlayerSchema(player: dict) -> LoginPlayer:
+def loginPlayer(player: dict) -> LoginPlayer:
+    if player is None:
+        return None
     return LoginPlayer(**({
         "playerId": str(player["_id"]),
         "email": player["email"],
@@ -29,7 +30,7 @@ def loginPlayerSchema(player: dict) -> LoginPlayer:
     }))
 
 # Returns entire Player object
-def fullPlayerSchema(player: dict) -> Player:
+def fullPlayer(player: dict) -> Player:
     return Player(**({
         "playerId": str(player["_id"]),
         "firstName": player["firstName"],
@@ -37,7 +38,7 @@ def fullPlayerSchema(player: dict) -> Player:
         "category": player["category"],
         "position": player["position"],
         "email": player["email"],
-        "teams": fullTeamSchemas(player["teams"]) if len(player["teams"]) > 0 else [],
+        "teams": fullTeams(player["teams"]) if len(player["teams"]) > 0 else [],
         "totalGames": player["totalGames"],
         "totalActions": player["totalActions"],
         "totalPoints": player["totalPoints"],
@@ -45,9 +46,9 @@ def fullPlayerSchema(player: dict) -> Player:
         "totalNeutrals": player["totalNeutrals"],
         "totalErrors": player["totalErrors"],
         "totalEffectiveness": player["totalEffectiveness"],
-        "playerCreationDateTime": str(player["playerCreationDateTime"]).split(" ")[0]
+        "playerCreationDateTime": player["playerCreationDateTime"]
     }))
 
 # List of Player objects
-def fullPlayerSchemas(players: list[dict]) -> list[Player]:
-    return [fullPlayerSchema(player) for player in players]
+def fullPlayers(players: list[dict]) -> list[Player]:
+    return [fullPlayer(player) for player in players]

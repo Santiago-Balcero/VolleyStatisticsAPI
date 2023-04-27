@@ -7,11 +7,11 @@
 
 
 # TO DO
-- Create service layer for access to data
-- Test all endpoints then export postman collection
-- Add logging to all API
+- Test all endpoints then export postman collection !!!!!!!!!!!!! FInishGame PlayGame to test
 - In update game statistics add a way to update also Player statistics
 - When creating a new game add a 1 to total Games in Player statistics
 - Previous two things also for teams scope????
+- CRATE TESTS
+- Add localtimezone -5 for all DateTime.now()
 - Parametric texts for constants, get them from DB
 - A lint for python

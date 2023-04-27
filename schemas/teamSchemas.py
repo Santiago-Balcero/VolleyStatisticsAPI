@@ -1,21 +1,31 @@
 from models.teamModels import Team
-from schemas.gameSchemas import fullGameSchemas
-    
-def fullTeamSchema(team: dict) -> Team:
+from schemas.gameSchemas import fullGames
+
+def fullTeam(team: dict) -> Team:
     return Team(**({
         "teamId": str(team["teamId"]),
         "teamName": team["teamName"],
         "teamCategory": team["teamCategory"],
-        "games": fullGameSchemas(team["games"]) if len(team["games"]) > 0 else [],
-        # Sends only date, not time, to Team object
-        "teamCreationDateTime": str(team["teamCreationDateTime"]).split(" ")[0]   
+        "games": fullGames(team["games"]) if len(team["games"]) > 0 else [],
+        "totalActions": team["totalActions"],
+        "totalPoints": team["totalPoints"],
+        "totalPerfects": team["totalPerfects"],
+        "totalNeutrals": team["totalNeutrals"],
+        "totalErrors": team["totalErrors"],
+        "totalEffectiveness": team["totalEffectiveness"],
+        "teamCreationDateTime": team["teamCreationDateTime"]
     }))
 
-def fullTeamSchemas(teams: list[dict]) -> list[Team]:
-    return [fullTeamSchema(team) for team in teams]
+def fullTeams(teams: list[dict]) -> list[Team]:
+    return [fullTeam(team) for team in teams]
 
-def allTeamsSchemas(players: list[dict]) -> list[Team]:
+def allTeams(players: list[dict]) -> list[Team]:
     teams = []
     for player in players:
-        teams += fullTeamSchemas(player["teams"])
+        teams += fullTeams(player["teams"])
     return teams
+
+def teamsFromPlayer(player: dict) -> list[Team]:
+    if player is None:
+        return None
+    return fullTeams(player["teams"]) if len(player["teams"]) > 0 else []

@@ -26,10 +26,6 @@ def unableToCreatePlayer() -> Exception:
 	LOG.warning("Unable to create player error response sent.")
 	raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to create player.")
 
-def invalidPassword() -> Exception:
-	LOG.warning("Invalid password error response sent.")
-	raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Invalid password.")
-
 def unableToUpdatePassword() -> Exception:
     LOG.warning("Unable to update password response sent.")
     raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to update password.")
@@ -55,12 +51,12 @@ def unableToCreateTeam() -> Exception:
 	raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to create team.")
 
 def activeGame(game: Game) -> Exception:
-	LOG.debug(f"Active game: id {game['gameId']}, started at {game['gameDateTime']}, vs {game['opponentTeam']}")
+	LOG.debug(f"Active game: id {game.gameId}, started at {game.gameDateTime}, vs {game.opponentTeam}.")
 	LOG.warning("There is another active game error response sent.")
-	raise HTTPException(status_code = status.HTTP_403_FORBIDDEN, detail = f"There is another active game: game with id {game['gameId']} started at {game['gameDateTime']} in {game['gameCity']}, {game['gameCountry']} vs {game['opponentTeam']} is still active.")
+	raise HTTPException(status_code = status.HTTP_403_FORBIDDEN, detail = f"There is another active game. Game with id {game.gameId}, started at {game.gameDateTime} in {game.gameCity}, {game.gameCountry}, vs {game.opponentTeam}, is still active.")
 
 def gameNotFound() -> Exception:
-	LOG.warning("Game not found.")
+	LOG.warning("Game not found response sent.")
 	raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Game not found.")
 
 def gameAlreadyFinished() -> Exception:
@@ -87,10 +83,22 @@ def invalidActionAndActionResult() -> Exception:
 	LOG.warning("Invalid combination for action and action result error response sent.")
 	raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Invalid combination for action and action result.")
 
-def invalidObjectId() -> Exception:
+def invalidObjectId(obj: str) -> Exception:
 	LOG.warning("Invalid ObjectId response sent.")
-	raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "Invalid ObjectId.")
+	raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = f"Invalid ObjectId. Object: {obj}.")
 
-def noDataConnection(e: str) -> Exception:
-    LOG.warning(f"No connection with database. Error: -> {e}")
+def noDataConnection(method: str, e: str) -> Exception:
+    LOG.warning(f"No connection with database. Method: {method}. Error: -> {e}")
     raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "No connection with database.")
+
+def unableToDeletePlayer() -> Exception:
+    LOG.warning("Unable to delete player response sent.")
+    raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to delete player.")
+
+def unableToUpdateTeam() -> Exception:
+	LOG.warning("Unable to update team error response sent.")
+	raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to update team.")
+
+def unableToDeleteTeam() -> Exception:
+    LOG.warning("Unable to delete team response sent.")
+    raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = "Unable to delete team.")

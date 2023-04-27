@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from decouple import config
 from models.loginModels import AuthResponse, RefreshToken
 import services.loginService as LoginService
-from utils.passwordContext import PASSWORD_CONTEXT
+from config.passwordContext.passwordContext import PASSWORD_CONTEXT
 from config.logger.logger import LOG
 
 router = APIRouter(prefix = "/access", tags = ["Login"])
