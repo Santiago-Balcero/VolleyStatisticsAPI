@@ -7,7 +7,7 @@
 
 
 # TO DO
-- Test all endpoints then export postman collection !!!!!!!!!!!!! FInishGame PlayGame to test
+- def SumGame
 - In update game statistics add a way to update also Player statistics
 - When creating a new game add a 1 to total Games in Player statistics
 - Previous two things also for teams scope????

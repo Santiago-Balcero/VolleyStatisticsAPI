@@ -1,9 +1,11 @@
 from bson import ObjectId
 from models.teamModels import Team, UpdatedTeam
 from schemas.teamSchemas import allTeams, teamsFromPlayer
-
 from config.db.client import dbClient
+import services.playersService as PlayerService
 from utils import exceptions as ex
+from config.logger.logger import LOG
+
 
 def getAllTeams() -> list[Team]:
 	try:
@@ -106,3 +108,20 @@ def checkTeamExistence(teams: list[Team], teamName: str) -> None:
 	for team in teams:
 		if team.teamName == teamName:
 			ex.teamAlreadyExists()
+   
+def sumTeamGames(teamId: str, playerId: str) -> None:
+	LOG.debug(f"Counting games of team: {teamId}.")
+	team: Team = getTeamById(teamId)
+	games: int = len(team.games)
+	LOG.debug(f"Total games: {games}.")
+	try:
+		result = dbClient.players.update_one(  
+									{"teams": {"$elemMatch": {"teamId": ObjectId(teamId)}}},
+									{"$set": {"teams.$.totalGames": games}})
+	except Exception as e:
+		ex.noDataConnection("sumTeamGames/update_one", e)
+	if result.modified_count != 1:
+		ex.unableToUpdateGame
+	LOG.debug("Team total games updated.")
+	teams: list[Team] = getTeamsByPlayer(playerId)
+	PlayerService.sumPlayerGames(teams, playerId)

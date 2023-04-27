@@ -7,6 +7,7 @@ def fullTeam(team: dict) -> Team:
         "teamName": team["teamName"],
         "teamCategory": team["teamCategory"],
         "games": fullGames(team["games"]) if len(team["games"]) > 0 else [],
+        "totalGames": team["totalGames"],
         "totalActions": team["totalActions"],
         "totalPoints": team["totalPoints"],
         "totalPerfects": team["totalPerfects"],

@@ -6,6 +6,7 @@ from models.teamModels import Team
 from schemas.gameSchemas import gameFromPlayer
 from schemas.teamSchemas import teamsFromPlayer
 from utils import exceptions as ex
+import services.teamsService as TeamService
 from utils.constants import GAME_ACTIONS, ACTION_RESULTS
 from config.logger.logger import LOG
 
@@ -14,15 +15,15 @@ def getGameById(gameId: str) -> Game:
 		ex.invalidObjectId("game")
 	try:
 		game: Game = gameFromPlayer(dbClient.players.find_one(
-                                                        {"teams.games.gameId": ObjectId(gameId)}, 
-                                                        {"teams.games": 1}))
+														{"teams.games.gameId": ObjectId(gameId)}, 
+														{"teams.games": 1}))
 	except Exception as e:
 		ex.noDataConnection("getGameById/find_one", e)
 	if game is None:
 		ex.gameNotFound()
 	return game
 
-def createGame(teamId: str, newGame: Game) -> bool:
+def createGame(teamId: str, newGame: Game, playerId: str) -> bool:
 	try:
 		teams: list[Team] = teamsFromPlayer(dbClient.players.find_one(
 																{"teams.teamId": ObjectId(teamId)}, 
@@ -43,6 +44,7 @@ def createGame(teamId: str, newGame: Game) -> bool:
 		ex.noDataConnection("createGame/update_one", e)
 	if result.modified_count != 1:
 		ex.unableToCreateGame()
+	TeamService.sumTeamGames(teamId, playerId)
 	return True
 
 def finishGame(gameToFinish: EndGame) -> bool:
@@ -102,9 +104,14 @@ def playGame(gameAction: GameAction) -> Game:
 	return game
 
 def updateGameStatistics(game: Game) -> dict:
+
+	game.gameId = ObjectId(game.gameId)
+ 
+	
+	
 	# Transforms Game to dict to better work with this method
 	game: dict = dict(game)
-	game["gameId"] = ObjectId(game["gameId"])
+
 	for action in GAME_ACTIONS:
 		if action in ("attack", "block", "service"):
 			bestResult: str = "Points"
@@ -162,7 +169,6 @@ def checkForExistingGame(gameId: str) -> None:
 	if game != 1:
 		ex.gameNotFound()
 	LOG.debug(f"Game found: {gameId}.")
-  
 
 def checkForActiveGames(teams: list[Team]) -> None:
 	for team in teams:
@@ -174,8 +180,8 @@ def checkForActiveGames(teams: list[Team]) -> None:
 def checkIfGameIsActive(gameId: str):
 	try:
 		game: Game = gameFromPlayer(dbClient.players.find_one(
-                                                        {"teams.games.gameId": ObjectId(gameId)}, 
-                                                        {"teams.games": 1}))
+														{"teams.games.gameId": ObjectId(gameId)}, 
+														{"teams.games": 1}))
 	except Exception as e:
 		ex.noDataConnection("checkIfGameIsActive/find_one", e)
 	if game.gameId == gameId and game.status == 0:

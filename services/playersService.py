@@ -1,9 +1,11 @@
 from bson import ObjectId
 from models.playerModels import NewPlayer, Player, PlayerMainInfo, NewPassword, PlayerBase
+from models.teamModels import Team
 from schemas.playerSchemas import fullPlayers, mainInfoPlayer
 from config.db.client import dbClient
 from utils import exceptions as ex
 from config.passwordContext.passwordContext import PASSWORD_CONTEXT
+from config.logger.logger import LOG
 
 def getAllPlayers() -> list[Player]:
 	try:
@@ -84,3 +86,17 @@ def checkPlayerExistence(email: str) -> bool:
 	except Exception as e:
 		ex.noDataConnection("checkPlayerExistence/find", e)
 	return playerExists > 0
+
+def sumPlayerGames(teams: list[Team], playerId: str) -> None:
+	LOG.debug(f"Counting games for player: {playerId}.")
+	games: int = sum(team.totalGames for team in teams)
+	LOG.debug(f"Total games: {games}.")
+	try:
+		result = dbClient.players.update_one(
+									{"_id": ObjectId(playerId)},
+									{"$set": {"totalGames": games}})
+	except Exception as e:
+		ex.noDataConnection("sumPlayerGames/update_one", e)
+	if result.modified_count != 1:
+		ex.unableToUpdatePlayer()
+	LOG.debug("Player total games updated.")

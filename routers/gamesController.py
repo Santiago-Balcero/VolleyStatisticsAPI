@@ -18,7 +18,7 @@ async def getGameById(gameId: str, playerId: str = Depends(getCurrentPlayer)):
 async def createGame(teamId: str, newGame: Game, playerId: str = Depends(getCurrentPlayer)):
 	LOG.info("Request for createGame.")
 	LOG.debug(f"User: {playerId}. Team: {teamId}.")
-	GameService.createGame(teamId, newGame)
+	GameService.createGame(teamId, newGame, playerId)
 	LOG.info("New game created, response sent.")
 	LOG.debug(f"New game: {newGame.gameId}")
 	return f"Game {newGame.gameId} has started."

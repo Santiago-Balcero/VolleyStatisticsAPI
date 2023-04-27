@@ -9,6 +9,7 @@ class Team(BaseModel):
 	teamName: str
 	teamCategory: str
 	games: list[Game] = []
+	totalGames: int = 0
 	totalActions: int = 0
 	totalPoints: int = 0
 	totalPerfects: int = 0

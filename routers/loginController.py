@@ -48,7 +48,7 @@ def createAuthResponse(playerId: str) -> AuthResponse:
 	token2: str = jwt.encode(refreshToken, SECRET, algorithm = ALGORITHM)
 	LOG.debug(f"Access Token: {token}")
 	LOG.debug(f"Refresh Token: {token2}")
-	LOG.info("Acces and refresh tokens were created and sent as response.")
+	LOG.info("Access and refresh tokens were created and sent as response.")
 	# If user authentication is ok API returns access token
 	return AuthResponse(accessToken = token, refreshToken = token2)
 
