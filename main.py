@@ -1,13 +1,14 @@
 from fastapi import FastAPI
-from routers import loginController, playersController, teamsController, gamesController
+from routers import games_controller, login_controller, players_controller, teams_controller
 from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
-app.include_router(loginController.router)
-app.include_router(playersController.router)
-app.include_router(teamsController.router)
-app.include_router(gamesController.router)
+app.include_router(login_controller.router)
+app.include_router(players_controller.router)
+app.include_router(teams_controller.router)
+app.include_router(games_controller.router)
 
 origins = [
     "http://localhost:4200"
