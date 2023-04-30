@@ -6,7 +6,6 @@ from bson import ObjectId
 from jose import JWTError, jwt
 import services.login_service as LoginService
 from config.logger.logger import LOG
-from config.password.password_context import PASSWORD_CONTEXT
 from models.login_models import AuthResponse, RefreshToken
 from utils import exceptions as ex
 
@@ -19,7 +18,7 @@ SECRET = config("SECRET")
 ALGORITHM = config("ALGORITHM")
 
 
-async def get_current_player(token: str = Depends(oauth2)):
+async def get_current_player(token: str = Depends(oauth2)) -> str:
     return decode_token(token)
 
 
@@ -57,11 +56,7 @@ def create_auth_response(player_id: str) -> AuthResponse:
     return AuthResponse(access_token=token, refresh_token=token2)
 
 
-def verify_password(plain_password: str, hashed_password: str):
-    return PASSWORD_CONTEXT.verify(plain_password, hashed_password)
-
-
-def decode_token(token: str):
+def decode_token(token: str) -> str:
     try:
         payload = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
         player_id = payload.get("sub")

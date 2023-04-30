@@ -67,8 +67,8 @@ def create_team(new_team: Team, player_id: str) -> None:
         ex.no_data_connection("teams_service/create_team/update_one", exception)
     if result.modified_count != 1:
         ex.unable_to_create_team()
-    teams: list[Team] = get_teams_by_player(player_id)
-    PlayerService.sum_player_teams(teams, player_id)
+    player_teams: list[Team] = get_teams_by_player(player_id)
+    PlayerService.sum_player_teams(player_teams, player_id)
 
 
 def update_team_name(updated_team: UpdatedTeam) -> None:

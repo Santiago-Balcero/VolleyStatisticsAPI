@@ -6,7 +6,7 @@ from models.game_models import Game
 
 
 class Team(BaseModel):
-    team_id: str = None
+    team_id: str = ""
     team_name: str
     team_category: str
     games: list[Game] = []

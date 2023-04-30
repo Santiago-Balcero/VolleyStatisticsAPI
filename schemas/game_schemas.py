@@ -57,7 +57,7 @@ def full_games(games: list[dict]) -> list[Game]:
     return [full_game(game) for game in games]
 
 
-def game_from_player(player: dict, game_id: str) -> Game:
+def game_from_player(player: dict, game_id: str) -> Game | None:
     if player is None:
         return None
     for team in player["teams"]:

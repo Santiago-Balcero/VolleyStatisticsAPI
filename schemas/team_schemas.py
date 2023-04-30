@@ -67,7 +67,7 @@ def teams_from_player(player: dict) -> list[Team]:
     return full_teams(player["teams"]) if len(player["teams"]) > 0 else []
 
 
-def team_from_player(player: dict, team_id: str) -> Team:
+def team_from_player(player: dict, team_id: str) -> Team | None:
     if player is None:
         return None
     for team in player["teams"]:

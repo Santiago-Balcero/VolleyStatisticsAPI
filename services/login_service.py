@@ -35,5 +35,5 @@ def check_if_player_exists(player_id: str) -> bool:
     return True
 
 
-def verify_password(plain_password: str, hashed_password: str):
+def verify_password(plain_password: str, hashed_password: str) -> bool:
     return password_context.verify(plain_password, hashed_password)

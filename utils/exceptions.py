@@ -121,7 +121,7 @@ def invalid_object_id(obj: str) -> Exception:
                         detail=f"Invalid ObjectId. Object: {obj}.")
 
 
-def no_data_connection(method: str, e: str) -> Exception:
+def no_data_connection(method: str, e: Exception) -> Exception:
     LOG.warning(f"No connection with database. Method: {method}. Error: -> {e}")
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                         detail="No connection with database.")

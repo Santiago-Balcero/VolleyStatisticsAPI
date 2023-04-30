@@ -2,11 +2,10 @@ from datetime import datetime
 from pydantic import BaseModel, validator
 from bson import ObjectId
 from utils.constants import ACTION_RESULTS, GAME_ACTIONS, GAME_POSITIONS
-from utils import exceptions as ex
 
 
 class Game(BaseModel):
-    game_id: str = None
+    game_id: str = ""
     game_date_time: datetime = datetime.now()
     status: int = 1  # 1 for active game, 0 for finished game
     game_country: str
@@ -94,13 +93,13 @@ class EndGame(BaseModel):
     @validator("team_id")
     def team_id_validation(cls, val):
         if not ObjectId.is_valid(val):
-            ex.invalid_object_id("team")
+            raise ValueError("Invalid team id.")
         return val
 
     @validator("game_id")
     def game_id_validation(cls, val):
         if not ObjectId.is_valid(val):
-            ex.invalid_object_id("game")
+            raise ValueError("Invalid game id.")
         return val
 
 
@@ -112,14 +111,14 @@ class GameAction(EndGame):
     def action_validation(cls, val):
         action = val.strip().lower()
         if action not in GAME_ACTIONS:
-            ex.invalid_action()
+            raise ValueError("Invalid action.")
         return action
 
     @validator("action_result")
     def action_result_validation(cls, val):
         result = val.strip()
         if result not in ACTION_RESULTS:
-            ex.invalid_action_result()
+            raise ValueError("Invalid action result.")
         # Returns as title() and adding a final "s" because
         # attributes names are for example "attackPoints"
         return f"{result}s"

@@ -97,11 +97,11 @@ def play_game(game_action: GameAction, player_id: str) -> Game:
                               exception)
     if game is None:
         ex.unable_to_update_game()
-    game = update_game_statistics(game)
-    updated_game_dict: dict = dict(game)
+    updated_game = update_game_statistics(game)
+    updated_game_dict: dict = dict(updated_game)
     try:
         # UPDATED STATISTICS: Updates whole game with updated statistics
-        game: Game = game_from_player(get_db_client().players.find_one_and_update(
+        game_to_return: Game = game_from_player(get_db_client().players.find_one_and_update(
             {"teams.games.game_id": ObjectId(game_action.game_id)},
             {"$set": {
                 "teams.$[t].games.$[g]": updated_game_dict}},
@@ -114,10 +114,10 @@ def play_game(game_action: GameAction, player_id: str) -> Game:
     except Exception as exception:
         ex.no_data_connection("teamsService/play_game/find_one_and_update/updated_statistics",
                               exception)
-    if game is None:
+    if game_to_return is None:
         ex.unable_to_update_game()
     TeamService.register_game_action(game_action, player_id)
-    return game
+    return game_to_return
 
 
 def update_game_statistics(game: Game) -> Game:
@@ -200,16 +200,18 @@ def valid_action_and_action_result(action: str, action_result: str) -> bool:
 def validate_game_id(object_id: ObjectId) -> bool:
     # Checks if object_id exists as a team_id in DB
     try:
-        count: int = get_db_client().players.count_documents({"teams.team_id": object_id})
+        teams_count: int = get_db_client().players.count_documents(
+            {"teams.team_id": object_id})
     except Exception as exception:
         ex.no_data_connection("gamesService/validate_game_id/count_documents/teams", exception)
-    if count > 0:
+    if teams_count > 0:
         return False
     # Checks if object_id exists as a game_id in DB
     try:
-        count: int = get_db_client().players.count_documents({"teams.games.game_id": object_id})
+        games_count: int = get_db_client().players.count_documents(
+            {"teams.games.game_id": object_id})
     except Exception as exception:
         ex.no_data_connection("gamesServices/validate_game_id/count_documents/games", exception)
-    if count > 0:
+    if games_count > 0:
         return False
     return True
