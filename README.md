@@ -13,7 +13,6 @@
 
 
 # TO DO
-- CRATE TESTS
 - Add localtimezone -5 for all DateTime.now()
 - Parametric texts for constants, get them from DB
 - Store session data?? ip from client and etc??

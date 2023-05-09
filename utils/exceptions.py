@@ -4,13 +4,13 @@ from config.logger.logger import LOG
 
 def wrong_credentials() -> Exception:
     LOG.warning("Wrong credentials error response sent.")
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                         detail="Wrong login credentials.")
 
 
 def invalid_token() -> Exception:
     LOG.warning("Invalid token response sent.")
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                         detail="Invalid token.")
 
 

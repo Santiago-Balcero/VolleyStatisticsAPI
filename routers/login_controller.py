@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from decouple import config
 from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.responses import JSONResponse
 from bson import ObjectId
 from jose import JWTError, jwt
 import services.login_service as LoginService
@@ -22,11 +23,11 @@ async def get_current_player(token: str = Depends(oauth2)) -> str:
     return decode_token(token)
 
 
-@router.post("/login", status_code=status.HTTP_200_OK, response_model=AuthResponse)
+@router.post("/login", status_code=status.HTTP_200_OK, response_model=AuthResponse or JSONResponse)
 async def login(form: OAuth2PasswordRequestForm = Depends()):
     LOG.info(f"Login request for {form.username}.")
     LOG.debug(f"Data for login request, username: {form.username}, password: {form.password}.")
-    player_id = LoginService.check_username_and_password(form.username, form.password)
+    player_id: str = LoginService.check_username_and_password(form.username, form.password)
     return create_auth_response(player_id)
 
 
@@ -34,7 +35,7 @@ async def login(form: OAuth2PasswordRequestForm = Depends()):
 async def update_tokens(refresh_token: RefreshToken):
     LOG.info("Refresh token request.")
     LOG.debug(f"Refresh token for request: {refresh_token.refresh_token}.")
-    player_id = decode_token(refresh_token.refresh_token)
+    player_id: str = decode_token(refresh_token.refresh_token)
     return create_auth_response(player_id)
 
 
@@ -59,7 +60,7 @@ def create_auth_response(player_id: str) -> AuthResponse:
 def decode_token(token: str) -> str:
     try:
         payload = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
-        player_id = payload.get("sub")
+        player_id: str = payload.get("sub")
         if player_id is None or not ObjectId.is_valid(player_id):
             ex.invalid_token()
         if not LoginService.check_if_player_exists(player_id):

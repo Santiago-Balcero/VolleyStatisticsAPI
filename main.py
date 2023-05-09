@@ -11,7 +11,8 @@ app.include_router(teams_controller.router)
 app.include_router(games_controller.router)
 
 origins = [
-    "http://localhost:4200"
+    "http://localhost:4200",
+    "http://196.168.0.6"
 ]
 
 app.add_middleware(
