@@ -10,7 +10,7 @@ from config.logger.logger import LOG
 from models.login_models import AuthResponse, RefreshToken
 from utils import exceptions as ex
 
-router = APIRouter(prefix="/access", tags=["Login"])
+router = APIRouter(prefix="/auth", tags=["Login"])
 
 oauth2 = OAuth2PasswordBearer(tokenUrl="login")
 

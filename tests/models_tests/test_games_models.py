@@ -1,5 +1,5 @@
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
-import pydantic
 import pytest
 import sys
 from decouple import config
@@ -28,7 +28,7 @@ def test_game_validation_error(
         opponent_t: str,
         player_pos: str,
         player_num: str):
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(HTTPException):
         game = Game(
             game_country=game_co,
             game_city=game_ci,
@@ -49,7 +49,7 @@ def test_game_action_validation_error(
         game_i: str,
         act: str,
         action_res: str):
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(HTTPException):
         game_action = GameAction(
             team_id=team_i,
             game_id=game_i,
@@ -67,7 +67,7 @@ def test_game_action_validation_error(
 def test_end_game_validation_error(
         team_i: str,
         game_i: str):
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(HTTPException):
         game_action = EndGame(
             team_id=team_i,
             game_id=game_i)

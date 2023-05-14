@@ -1,2 +1,11 @@
 .env
+.pyc
+.coverage
+
+/__pycache__
+
 __pycache__/
+
+.mypy_cache/
+.pytest_cache/
+.vscode/

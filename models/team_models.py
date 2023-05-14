@@ -1,8 +1,9 @@
 from datetime import datetime
 from bson import ObjectId
 from pydantic import BaseModel, validator
-from utils.constants import TEAM_CATEGORIES
 from models.game_models import Game
+from utils.constants import TEAM_CATEGORIES
+from utils import exceptions as ex
 
 
 class Team(BaseModel):
@@ -57,7 +58,7 @@ class Team(BaseModel):
     def team_category_validation(cls, val):
         val = val.strip().title()
         if val not in TEAM_CATEGORIES:
-            raise ValueError("Invalid team category.")
+            ex.invalid_value("team category")
         return val
 
 
@@ -68,7 +69,7 @@ class UpdatedTeam(BaseModel):
     @validator("team_id")
     def team_id_validation(cls, val):
         if not ObjectId.is_valid(val):
-            raise ValueError("Invalid team id.")
+            ex.invalid_value("team id")
         return val
 
     @validator("new_team_name")
@@ -79,5 +80,5 @@ class UpdatedTeam(BaseModel):
 def validate_name(name: str) -> str:
     name = name.strip().title()
     if len(name) < 1:
-        raise ValueError("Invalid team name.")
+        ex.invalid_value("team name")
     return name

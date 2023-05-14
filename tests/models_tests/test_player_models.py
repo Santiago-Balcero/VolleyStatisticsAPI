@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 import pydantic
 import pytest
 import sys
@@ -27,7 +28,7 @@ def test_new_player_validation_error(
         pos: str,
         mail: pydantic.EmailStr,
         passw: str):
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(HTTPException):
         player = NewPlayer(
             first_name=first_n,
             last_name=last_n,
@@ -48,6 +49,6 @@ def test_new_player_validation_error(
         ("123456789101112")
     ])   
 def test_update_password(new_pass: str):
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(HTTPException):
         password = NewPassword(new_password=new_pass)
         print(password)

@@ -2,6 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel, validator
 from bson import ObjectId
 from utils.constants import ACTION_RESULTS, GAME_ACTIONS, GAME_POSITIONS
+from utils import exceptions as ex
 
 
 class Game(BaseModel):
@@ -54,35 +55,35 @@ class Game(BaseModel):
     def game_country_validation(cls, val):
         val = val.strip().title()
         if len(val) < 4:
-            raise ValueError("Invalid country name.")
+            ex.invalid_value("game country")
         return val
 
     @validator("game_city")
     def game_city_validation(cls, val):
         val = val.strip().title()
         if len(val) < 1:
-            raise ValueError("Invalid city name.")
+            ex.invalid_value("game city")
         return val
 
     @validator("opponent_team")
     def opponent_team_validation(cls, val):
         val = val.strip().title()
         if len(val) < 1:
-            raise ValueError("Invalid opponent team name.")
+            ex.invalid_value("opponent team's name")
         return val
 
     @validator("player_position")
     def player_position_validation(cls, val):
         val = val.strip().upper()
         if val not in GAME_POSITIONS:
-            raise ValueError("Invalid position.")
+            ex.invalid_value("player position")
         return val
 
     @validator("player_number")
     def player_number_validation(cls, val):
         val = val.strip().upper()
         if not val == "ANY" and not val.isdigit():
-            raise ValueError("Invalid player number.")
+            ex.invalid_value("player number")
         return val
 
 
@@ -93,13 +94,13 @@ class EndGame(BaseModel):
     @validator("team_id")
     def team_id_validation(cls, val):
         if not ObjectId.is_valid(val):
-            raise ValueError("Invalid team id.")
+            raise ex.invalid_value("team id")
         return val
 
     @validator("game_id")
     def game_id_validation(cls, val):
         if not ObjectId.is_valid(val):
-            raise ValueError("Invalid game id.")
+            ex.invalid_value("game id")
         return val
 
 
@@ -111,14 +112,14 @@ class GameAction(EndGame):
     def action_validation(cls, val):
         action = val.strip().lower()
         if action not in GAME_ACTIONS:
-            raise ValueError("Invalid action.")
+            ex.invalid_value("action")
         return action
 
     @validator("action_result")
     def action_result_validation(cls, val):
         result = val.strip()
         if result not in ACTION_RESULTS:
-            raise ValueError("Invalid action result.")
+            ex.invalid_value("action result")
         # Returns as title() and adding a final "s" because
         # attributes names are for example "attackPoints"
         return f"{result}s"

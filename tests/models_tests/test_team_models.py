@@ -1,4 +1,4 @@
-import pydantic
+from fastapi import HTTPException
 import pytest
 import sys
 from decouple import config
@@ -17,7 +17,7 @@ from models.team_models import Team, UpdatedTeam
 def test_team_validation_error(
         team_n: str,
         team_c: str):
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(HTTPException):
         team = Team(
             team_name=team_n,
             team_category=team_c)
@@ -33,7 +33,7 @@ def test_team_validation_error(
 def test_updated_team_validation_error(
         team_i: str,
         new_team_n: str):
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(HTTPException):
         updated_team = UpdatedTeam(
             team_id=team_i,
             new_team_name=new_team_n)

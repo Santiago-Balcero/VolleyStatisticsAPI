@@ -1,7 +1,9 @@
 from datetime import datetime
-from pydantic import BaseModel, validator, EmailStr
+from pydantic import BaseModel, validator, EmailStr, ValidationError
 from models.team_models import Team
 from utils.constants import PLAYER_POSITIONS, PLAYER_CATEGORIES
+from utils import exceptions as ex
+import re
 
 
 class PlayerBase(BaseModel):
@@ -9,27 +11,27 @@ class PlayerBase(BaseModel):
     last_name: str
     category: str  # Category on which player plays Men or Women
     position: str
-    email: EmailStr
+    email: str
 
     @validator("first_name")
     def first_name_validation(cls, val):
         val = val.strip().title()
         if len(val) < 1 or len(val) > 30:
-            raise ValueError("Invalid first name.")
+            ex.invalid_value("first name")
         return val
 
     @validator("last_name")
     def last_name_validation(cls, val):
         val = val.strip().title()
         if len(val) < 1 or len(val) > 30:
-            raise ValueError("Invalid last name.")
+            ex.invalid_value("last name")
         return val
 
     @validator("category")
     def category_validation(cls, val):
         val = val.strip().title()
         if val not in PLAYER_CATEGORIES:
-            raise ValueError("Invalid category.")
+            ex.invalid_value("category")
         return val
 
     @validator("position")
@@ -37,7 +39,14 @@ class PlayerBase(BaseModel):
         val = val.strip().upper()
         # OH = Outside Hitter, S = Setter, MB = Middle Blocker, L = Libero, O = Opposite spiker
         if val not in PLAYER_POSITIONS:
-            raise ValueError("Invalid position.")
+            ex.invalid_value("position")
+        return val
+    
+    @validator("email")
+    def email_validation(cls, val):
+        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+        if not re.fullmatch(regex, val):
+            ex.invalid_value("email")
         return val
 
 
@@ -150,5 +159,5 @@ def password_check(val):
     val = val.strip()
     if " " in val or len(val) < 12 or sum(1 for x in val if x.isupper()) == 0 or \
             sum(1 for x in val if x.islower()) == 0 or sum(1 for x in val if x.isdigit()) == 0:
-        raise ValueError("Invalid password.")
+        ex.invalid_value("password")
     return val

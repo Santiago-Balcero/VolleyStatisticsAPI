@@ -4,6 +4,7 @@ from models.player_models import NewPlayer, Player, PlayerBase, NewPassword
 from models.response_models import ResponseModel
 import services.players_service as PlayerService
 from config.logger.logger import LOG
+from pydantic import ValidationError
 
 
 router = APIRouter(prefix="/players", tags=["Players"])
@@ -49,7 +50,7 @@ async def update_password(new_password: NewPassword, player_id: str = Depends(ge
     return ResponseModel(detail="Password successfully changed.")
 
 
-@router.put("", status_code=status.HTTP_200_OK, response_model=str)
+@router.put("", status_code=status.HTTP_200_OK, response_model=ResponseModel)
 async def update_player(player: PlayerBase, player_id: str = Depends(get_current_player)):
     LOG.info("Request for update_player.")
     LOG.debug(f"User: {player_id}.")
@@ -58,7 +59,7 @@ async def update_player(player: PlayerBase, player_id: str = Depends(get_current
     return ResponseModel(detail="Player successfully updated.")
 
 
-@router.delete("/delete", status_code=status.HTTP_200_OK, response_model=str)
+@router.delete("/delete", status_code=status.HTTP_200_OK, response_model=ResponseModel)
 async def delete_player(player_id: str = Depends(get_current_player)):
     LOG.info("Request for delete_player.")
     LOG.debug(f"User: {player_id}.")

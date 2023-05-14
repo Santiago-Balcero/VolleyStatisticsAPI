@@ -143,3 +143,9 @@ def unable_to_delete_team() -> Exception:
     LOG.warning("Unable to delete team response sent.")
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                         detail="Unable to delete team.")
+
+
+def invalid_value(value: str) -> Exception:
+    LOG.warning(f"Invalid value for {value} response sent.")
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"Invalid value for {value}.")
