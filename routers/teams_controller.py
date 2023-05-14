@@ -41,10 +41,12 @@ async def get_team_by_id(team_id: str, player_id: str = Depends(get_current_play
 async def create_team(new_team: Team, player_id: str = Depends(get_current_player)):
     LOG.info("Request for create_team.")
     LOG.debug(f"User: {player_id}.")
-    TeamService.create_team(new_team, player_id)
+    team: Team = TeamService.create_team(new_team, player_id)
     LOG.info("New team created, response sent.")
     LOG.debug(f"New team: {new_team.team_id}.") 
-    return ResponseModel(detail=f"Team {new_team.team_name} successfully registered.")
+    return ResponseModel(
+        detail=f"Team {new_team.team_name} successfully registered.",
+        data=team)
 
 
 @router.put("", status_code=status.HTTP_200_OK, response_model=ResponseModel)

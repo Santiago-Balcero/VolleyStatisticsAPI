@@ -29,6 +29,7 @@ def test_create_auth_response():
     result = create_auth_response(player_id)
     assert type(result) == AuthResponse
 
+
 @pytest.mark.parametrize(
     "user, passw, expected",
     [
@@ -37,12 +38,12 @@ def test_create_auth_response():
         ("dsadasas", "adasd@das", {"detail": "Wrong login credentials."})
     ]
 )
-def test_wrong_login(user: str, passw: str, expected, database_check):
-    result = client.post("/auth/login",
-                        data={
-                            "username": user,
-                            "password": passw
-                        })
+def test_wrong_login(user: str, passw: str, expected: dict, database_check):
+    result = client.post(
+        "/auth/login",
+        data={
+            "username": user,
+            "password": passw})
     print(result.json())
     assert result.json() == expected
     if user == TEST_USERNAME and passw == TEST_PASSWORD:
@@ -51,10 +52,10 @@ def test_wrong_login(user: str, passw: str, expected, database_check):
 
 
 def test_good_login(database_check):
-    result = client.post("/auth/login",
-                        data={
-                            "username": TEST_USERNAME,
-                            "password": TEST_PASSWORD
-                        })
+    result = client.post(
+        "/auth/login",
+        data={
+            "username": TEST_USERNAME,
+            "password": TEST_PASSWORD})
     assert result.json()["access_token"]
     assert result.json()["refresh_token"]

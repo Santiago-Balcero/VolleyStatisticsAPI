@@ -69,6 +69,7 @@ def create_team(new_team: Team, player_id: str) -> None:
         ex.unable_to_create_team()
     player_teams: list[Team] = get_teams_by_player(player_id)
     PlayerService.sum_player_teams(player_teams, player_id)
+    return get_team_by_id(new_team.team_id)
 
 
 def update_team_name(updated_team: UpdatedTeam) -> None:
@@ -110,6 +111,8 @@ def delete_team(team_id: str, player_id: str) -> None:
         ex.no_data_connection("teams_service/delete_team/update_one", exception)
     if result.modified_count != 1:
         ex.unable_to_delete_team()
+    player_teams: list[Team] = get_teams_by_player(player_id)
+    PlayerService.sum_player_teams(player_teams, player_id)
 
 
 def check_team_existence(teams: list[Team], team_name: str) -> None:

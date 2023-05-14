@@ -4,7 +4,6 @@ from models.player_models import NewPlayer, Player, PlayerBase, NewPassword
 from models.response_models import ResponseModel
 import services.players_service as PlayerService
 from config.logger.logger import LOG
-from pydantic import ValidationError
 
 
 router = APIRouter(prefix="/players", tags=["Players"])

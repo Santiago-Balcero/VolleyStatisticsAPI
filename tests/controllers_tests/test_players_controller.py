@@ -89,17 +89,20 @@ updated_player: PlayerBase = PlayerBase(
     "player, expected",
     [
         (player1,
-        {"data": None,
-        "detail": f"Player {player1.first_name} {player1.last_name} successfully registered."}),
+            {"data": None,
+                "detail":
+                    f"Player {player1.first_name} {player1.last_name} successfully registered."}),
         (player2, {"detail": "Invalid value for first name."}),
         (player3, {"detail": "Invalid value for email."}),
         (player4, {"detail": "Invalid value for password."}),
         (player5,
-        {"data": None,
-        "detail": f"Player {player5.first_name} {player5.last_name} successfully registered."}),
+            {"data": None,
+                "detail":
+                    f"Player {player5.first_name} {player5.last_name} successfully registered."}),
         (player6,
-        {"data": None,
-        "detail": f"Player {player6.first_name} {player6.last_name} successfully registered."})
+            {"data": None,
+                "detail":
+                    f"Player {player6.first_name} {player6.last_name} successfully registered."})
     ])
 # This database_clean call is enoguh for the entire test session
 def test_create_player(player: NewPlayer, expected: dict, database_clean) -> None:
@@ -109,11 +112,12 @@ def test_create_player(player: NewPlayer, expected: dict, database_clean) -> Non
 
 def test_get_player_by_id(token_for_tests, database_check) -> None:
     token = token_for_tests
-    result = client.get(f"{PLAYERS_MAIN_ROUTE}/player",
-                        headers={"Authorization": f"Bearer {token}"})
+    result = client.get(
+        f"{PLAYERS_MAIN_ROUTE}/player",
+        headers={"Authorization": f"Bearer {token}"})
     data = result.json()["data"]
     assert type(result.json()) == dict
-    assert result.json()["detail"] == None
+    assert result.json()["detail"] is None
     assert type(data) == dict
     # Assert data is type Player
     for key in Player.__fields__:
@@ -125,48 +129,54 @@ def test_get_player_by_id(token_for_tests, database_check) -> None:
     [
         (player1, {"new_password": "abcd123"}, {"detail": "Invalid value for password."}),
         (player1, {"new_password": "Calypsa2023Pelitos"},
-        {"data": None, "detail": "Password successfully changed."})
+            {"data": None, "detail": "Password successfully changed."})
     ]
 )
-def test_update_password(player: NewPlayer, new_pass: NewPassword, expected: dict,
-                        database_check):
-    result = client.post(LOGIN_ROUTE,
-                        data={
-                            "username": player.email,
-                            "password": player.password
-                        })
+def test_update_password(
+    player: NewPlayer,
+    new_pass: NewPassword,
+    expected: dict,
+        database_check):
+    result = client.post(
+        LOGIN_ROUTE,
+        data={
+            "username": player.email,
+            "password": player.password})
     assert result.json()["access_token"]
     token = result.json()["access_token"]
-    result = client.put(f"{PLAYERS_MAIN_ROUTE}/password",
-                        json=jsonable_encoder(new_pass),
-                        headers={"Authorization": f"Bearer {token}"})
+    result = client.put(
+        f"{PLAYERS_MAIN_ROUTE}/password",
+        json=jsonable_encoder(new_pass),
+        headers={"Authorization": f"Bearer {token}"})
     assert result.json() == expected
 
 
 def test_update_player(database_check):
-    result = client.post(LOGIN_ROUTE,
-                        data={
-                            "username": player1.email,
-                            "password": player1.password
-                        })
+    result = client.post(
+        LOGIN_ROUTE,
+        data={
+            "username": player1.email,
+            "password": player1.password})
     assert result.json()["access_token"]
     token = result.json()["access_token"]
-    result = client.put(PLAYERS_MAIN_ROUTE,
-                        json=jsonable_encoder(updated_player),
-                        headers={"Authorization": f"Bearer {token}"})
+    result = client.put(
+        PLAYERS_MAIN_ROUTE,
+        json=jsonable_encoder(updated_player),
+        headers={"Authorization": f"Bearer {token}"})
     assert type(result.json()) == dict
     assert result.json()["detail"] == "Player successfully updated."
     
 
 def test_delete_player(database_check):
-    result = client.post(LOGIN_ROUTE,
-                        data={
-                            "username": player5.email,
-                            "password": player5.password
-                        })
+    result = client.post(
+        LOGIN_ROUTE,
+        data={
+            "username": player5.email,
+            "password": player5.password})
     assert result.json()["access_token"]
     token = result.json()["access_token"]
-    result = client.delete(f"{PLAYERS_MAIN_ROUTE}/delete",
-                           headers={"Authorization": f"Bearer {token}"})
+    result = client.delete(
+        f"{PLAYERS_MAIN_ROUTE}/delete",
+        headers={"Authorization": f"Bearer {token}"})
     assert type(result.json()) == dict
     assert result.json()["detail"] == "Player successfully deleted."

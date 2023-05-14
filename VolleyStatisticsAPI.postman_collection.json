@@ -101,7 +101,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDRkZDg1ZDYyMTRlMTE2YjcyOTZhOTAiLCJleHAiOjE2ODI4Mzc2OTR9.d-UiTPcitH8P_d7of5w28d4rh6z6sg-ssMAye9zWxVc",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDViZDgzMjUxMmY1NjAzYWFjNDJlNTkiLCJleHAiOjE2ODQwNTIxOTB9.BW9z3DM16Tz9-QWv5VKE1LFu6Prt81jeX6DKaylNR2I",
 							"type": "string"
 						}
 					]
@@ -110,7 +110,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"first_name\": \"gdfgdftiago\",\r\n    \"last_name\": \"Bgdfero\",\r\n    \"category\": \"Men\",\r\n    \"position\": \"L\",\r\n    \"email\": \"c@mail.com\"\r\n}",
+					"raw": "{\r\n    \"first_name\": \"Calixta\",\r\n    \"last_name\": \"Solar\",\r\n    \"category\": \"Women\",\r\n    \"position\": \"OH\",\r\n    \"email\": \"x@mail.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -139,7 +139,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDRkZGU3MjIyZTNhNWM4NWQwZTUwNmEiLCJleHAiOjE2ODI4MzkyMjF9.4QAt1YZQW23rXvGTjPC2C6sdDMdMTAYRXikCnAJoWms",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDViZDgzMjUxMmY1NjAzYWFjNDJlNTkiLCJleHAiOjE2ODQwNTY4NDJ9.rkSb67HLCroDsOZTxpMnFgyTqMIG5lqQR1hqfbvuYmg",
 							"type": "string"
 						}
 					]
@@ -148,7 +148,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"team_name\": \"Vakif\",\r\n    \"team_category\": \"Women\"\r\n}",
+					"raw": "{\r\n    \"team_name\": \"jaxxxsaxvxxxxjajdajjkl\",\r\n    \"team_category\": \"Men\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -276,7 +276,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDRkZGU3MjIyZTNhNWM4NWQwZTUwNmEiLCJleHAiOjE2ODI4MzkyMjF9.4QAt1YZQW23rXvGTjPC2C6sdDMdMTAYRXikCnAJoWms",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDViZDgzMjUxMmY1NjAzYWFjNDJlNTkiLCJleHAiOjE2ODQwNTY4NDJ9.rkSb67HLCroDsOZTxpMnFgyTqMIG5lqQR1hqfbvuYmg",
 							"type": "string"
 						}
 					]
@@ -284,7 +284,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/teams/644dde8822e3a5c85d0e506c",
+					"raw": "http://localhost:8000/teams/646072de6087246881c4325a",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -292,7 +292,7 @@
 					"port": "8000",
 					"path": [
 						"teams",
-						"644dde8822e3a5c85d0e506c"
+						"646072de6087246881c4325a"
 					]
 				}
 			},
@@ -502,7 +502,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDRkZGU3MjIyZTNhNWM4NWQwZTUwNmEiLCJleHAiOjE2ODI4MzkyMjF9.4QAt1YZQW23rXvGTjPC2C6sdDMdMTAYRXikCnAJoWms",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDViZDgzMjUxMmY1NjAzYWFjNDJlNTkiLCJleHAiOjE2ODQwNTMwNjB9.xwEoxbjKy2rLjejl9X5MOJoKYB5a8ctU93e2yptRr7c",
 							"type": "string"
 						}
 					]
@@ -543,7 +543,7 @@
 					"formdata": [
 						{
 							"key": "username",
-							"value": "a@mail.com",
+							"value": "x@mail.com",
 							"type": "text"
 						},
 						{
@@ -554,14 +554,14 @@
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8000/access/login",
+					"raw": "http://localhost:8000/auth/login",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
-						"access",
+						"auth",
 						"login"
 					]
 				}
@@ -583,14 +583,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/access/refresh-token",
+					"raw": "http://localhost:8000/auth/refresh-token",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
-						"access",
+						"auth",
 						"refresh-token"
 					]
 				}

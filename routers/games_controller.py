@@ -44,4 +44,3 @@ async def play_game(game_action: GameAction, player_id: str = Depends(get_curren
     game: Game = GameService.play_game(game_action, player_id)
     LOG.info("Game updated, response sent. Model: Game.")
     return ResponseModel(data=game)
-

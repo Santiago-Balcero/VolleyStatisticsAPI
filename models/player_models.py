@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, validator, EmailStr, ValidationError
+from pydantic import BaseModel, validator
 from models.team_models import Team
 from utils.constants import PLAYER_POSITIONS, PLAYER_CATEGORIES
 from utils import exceptions as ex
