@@ -16,7 +16,7 @@ client = TestClient(app)
 TEAMS_MAIN_ROUTE = "/teams"
 
 
-def test_get_all_teams(database_check):
+def test_get_all_teams(database_clean, database_check):
     result = client.get(TEAMS_MAIN_ROUTE)
     assert result.status_code == 200
     assert type(result.json()["data"]) == list
@@ -144,4 +144,3 @@ def test_delete_team(token_for_tests, database_check):
         headers={"Authorization": f"Bearer {token}"})
     assert type(result.json()) == dict
     assert result.json()["detail"] == "Team successfully deleted."
-    

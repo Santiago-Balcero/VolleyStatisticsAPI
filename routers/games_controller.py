@@ -22,10 +22,10 @@ async def get_game_by_id(game_id: str, player_id: str = Depends(get_current_play
 async def create_game(team_id: str, new_game: Game, player_id: str = Depends(get_current_player)):
     LOG.info("Request for create_game.")
     LOG.debug(f"User: {player_id}. Team: {team_id}.")
-    GameService.create_game(team_id, new_game, player_id)
+    game: Game = GameService.create_game(team_id, new_game, player_id)
     LOG.info("New game created, response sent.")
     LOG.debug(f"New game: {new_game.game_id}")
-    return ResponseModel(detail=f"Game {new_game.game_id} has started.")
+    return ResponseModel(data=game, detail=f"Game {new_game.game_id} has started.")
 
 
 @router.put("/finish_game", status_code=status.HTTP_200_OK, response_model=ResponseModel)

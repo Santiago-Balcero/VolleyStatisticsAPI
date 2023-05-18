@@ -38,7 +38,7 @@ def test_create_auth_response():
         ("dsadasas", "adasd@das", {"detail": "Wrong login credentials."})
     ]
 )
-def test_wrong_login(user: str, passw: str, expected: dict, database_check):
+def test_wrong_login(user: str, passw: str, expected: dict, database_clean, database_check):
     result = client.post(
         "/auth/login",
         data={

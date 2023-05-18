@@ -16,7 +16,7 @@ PLAYERS_MAIN_ROUTE = "/players"
 LOGIN_ROUTE = "/auth/login"
 
 
-def test_get_all_players(database_check) -> None:
+def test_get_all_players(database_clean, database_check) -> None:
     result = client.get("/players")
     assert result.status_code == 200
     assert type(result.json()["data"]) == list

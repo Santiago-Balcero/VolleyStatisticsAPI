@@ -115,12 +115,6 @@ def invalid_action_and_action_result() -> Exception:
                         detail="Invalid combination for action and action result.")
 
 
-def invalid_object_id(obj: str) -> Exception:
-    LOG.warning("Invalid ObjectId response sent.")
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
-                        detail=f"Invalid ObjectId. Object: {obj}.")
-
-
 def no_data_connection(method: str, e: Exception) -> Exception:
     LOG.warning(f"No connection with database. Method: {method}. Error: -> {e}")
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

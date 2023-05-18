@@ -120,6 +120,4 @@ class GameAction(EndGame):
         result = val.strip()
         if result not in ACTION_RESULTS:
             ex.invalid_value("action result")
-        # Returns as title() and adding a final "s" because
-        # attributes names are for example "attackPoints"
-        return f"{result}s"
+        return result

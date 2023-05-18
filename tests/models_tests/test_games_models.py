@@ -27,7 +27,8 @@ def test_game_validation_error(
         game_ci: str,
         opponent_t: str,
         player_pos: str,
-        player_num: str):
+        player_num: str,
+        database_clean):
     with pytest.raises(HTTPException):
         game = Game(
             game_country=game_co,

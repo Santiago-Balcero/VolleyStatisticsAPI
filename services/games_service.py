@@ -13,7 +13,7 @@ from utils import exceptions as ex
 
 def get_game_by_id(game_id: str) -> Game:
     if not ObjectId.is_valid(game_id):
-        ex.invalid_object_id("game")
+        ex.invalid_value("game id")
     try:
         game: Game = game_from_player(get_db_client().players.find_one(
             {"teams.games.game_id": ObjectId(game_id)},
@@ -52,7 +52,7 @@ def create_game(team_id: str, new_game: Game, player_id: str) -> bool:
     if result.modified_count != 1:
         ex.unable_to_create_game()
     TeamService.sum_team_games(team_id, player_id)
-    return True
+    return get_game_by_id(new_game.game_id)
 
 
 def finish_game(game_to_finish: EndGame) -> bool:
@@ -80,12 +80,12 @@ def play_game(game_action: GameAction, player_id: str) -> Game:
         ex.invalid_action_and_action_result()
     try:
         # REGISTER ACTION: Updates action in DB
-        # Is different form updateStatistics method if something goes wrong then
+        # Is different form update_statistics method if something goes wrong then
         # statistics will be updated next time this method is called
         game: Game = game_from_player(get_db_client().players.find_one_and_update(
             {"teams.games.game_id": ObjectId(game_action.game_id)},
             {"$inc": {
-                f"teams.$[t].games.$[g].{game_action.action}_{game_action.action_result}": 1}},
+                f"teams.$[t].games.$[g].{game_action.action}_{game_action.action_result}s": 1}},
             array_filters=[
                 {"t.team_id": ObjectId(game_action.team_id)},
                 {"g.game_id": ObjectId(game_action.game_id)}],
@@ -189,10 +189,10 @@ def check_if_game_is_active(game_id: str) -> None:
 # Validates a proper combination between Action and action_result inputs
 def valid_action_and_action_result(action: str, action_result: str) -> bool:
     if action in GAME_ACTIONS[0:3]:
-        if action_result == "perfects":
+        if action_result == "perfect":
             return False
     elif action in GAME_ACTIONS[3:]:
-        if action_result == "points":
+        if action_result == "point":
             return False
     return True
 

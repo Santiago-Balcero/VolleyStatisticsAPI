@@ -31,7 +31,7 @@ def get_teams_by_player(player_id: str) -> list[Team]:
 
 def get_team_by_id(team_id: str) -> Team:
     if not ObjectId.is_valid(team_id):
-        ex.invalid_object_id("team")
+        ex.invalid_value("team id")
     try:
         team: Team = team_from_player(get_db_client().players.find_one(
             {"teams.team_id": ObjectId(team_id)},
@@ -94,7 +94,7 @@ def update_team_name(updated_team: UpdatedTeam) -> None:
 
 def delete_team(team_id: str, player_id: str) -> None:
     if not ObjectId.is_valid(team_id):
-        ex.invalid_object_id("team")
+        ex.invalid_value("team id")
     try:
         teams: list[Team] = teams_from_player(get_db_client().players.find_one(
             {"teams.team_id": ObjectId(team_id)},
@@ -125,7 +125,7 @@ def check_team_existence(teams: list[Team], team_name: str) -> None:
 
 def check_for_existing_team(team_id: str) -> None:
     if not ObjectId.is_valid(team_id):
-        ex.invalid_object_id("team")
+        ex.invalid_value("team id")
     try:
         team: int = get_db_client().players.count_documents({"teams.team_id": ObjectId(team_id)})
     except Exception as exception:
@@ -163,14 +163,14 @@ def register_game_action(game_action: GameAction, player_id: str) -> None:
             {"teams": {
                 "$elemMatch": {"team_id": ObjectId(game_action.team_id)}}},
             {"$inc": {
-                f"teams.$.{game_action.action}_{game_action.action_result}": 1}},
+                f"teams.$.{game_action.action}_{game_action.action_result}s": 1}},
             projection={"teams": 1},
             return_document=ReturnDocument.AFTER), game_action.team_id)
     except Exception as exception:
         ex.no_data_connection(
             "teams_service/register_game_action/find_one_and_update/register_action", exception)
     if team is None:
-        ex.unable_to_update_game()
+        ex.unable_to_update_team()
     team = update_team_statistics(team)
     try:
         # UPDATED STATISTICS: Updates whole team with updated statistics
@@ -199,7 +199,7 @@ def register_game_action(game_action: GameAction, player_id: str) -> None:
         ex.no_data_connection(
             "teams_service/register_game_action/find_one_and_update/updated_statistics", exception)
     if result.modified_count != 1:
-        ex.unable_to_update_game()
+        ex.unable_to_update_team()
     LOG.debug("Team statistics were updated.")
     PlayerService.register_game_action(game_action, player_id)
 

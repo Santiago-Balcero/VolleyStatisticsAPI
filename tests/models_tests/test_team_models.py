@@ -16,7 +16,8 @@ from models.team_models import Team, UpdatedTeam
     ])   
 def test_team_validation_error(
         team_n: str,
-        team_c: str):
+        team_c: str,
+        database_clean):
     with pytest.raises(HTTPException):
         team = Team(
             team_name=team_n,

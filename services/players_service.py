@@ -138,7 +138,7 @@ def register_game_action(game_action: GameAction, player_id: str) -> None:
         # statistics will be updated next time this method is called
         player: Player = full_player(get_db_client().players.find_one_and_update(
             {"_id": ObjectId(player_id)},
-            {"$inc": {f"{game_action.action}_{game_action.action_result}": 1}},
+            {"$inc": {f"{game_action.action}_{game_action.action_result}s": 1}},
             return_document=ReturnDocument.AFTER))
     except Exception as exception:
         ex.no_data_connection(

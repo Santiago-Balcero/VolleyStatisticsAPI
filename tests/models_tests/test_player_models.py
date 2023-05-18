@@ -27,7 +27,8 @@ def test_new_player_validation_error(
         cat: str,
         pos: str,
         mail: pydantic.EmailStr,
-        passw: str):
+        passw: str,
+        database_clean):
     with pytest.raises(HTTPException):
         player = NewPlayer(
             first_name=first_n,
