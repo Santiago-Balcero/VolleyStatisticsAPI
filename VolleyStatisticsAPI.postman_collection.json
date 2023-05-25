@@ -148,7 +148,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"team_name\": \"jaxxxsaxvxxxxjajdajjkl\",\r\n    \"team_category\": \"Men\"\r\n}",
+					"raw": "{\r\n    \"team_name\": \"jaxxxsssaxvxxxxjajdajjkl\",\r\n    \"team_category\": \"Men\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -276,7 +276,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDViZDgzMjUxMmY1NjAzYWFjNDJlNTkiLCJleHAiOjE2ODQwNTY4NDJ9.rkSb67HLCroDsOZTxpMnFgyTqMIG5lqQR1hqfbvuYmg",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDViZDgzMjUxMmY1NjAzYWFjNDJlNTkiLCJleHAiOjE2ODQ0MzkyMTZ9.dAqmhr7BV-pddy1ix51eQC3xwikyQW5oF98p8q1GjOE",
 							"type": "string"
 						}
 					]
@@ -355,7 +355,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDRkZGU3MjIyZTNhNWM4NWQwZTUwNmEiLCJleHAiOjE2ODI4MzkyMjF9.4QAt1YZQW23rXvGTjPC2C6sdDMdMTAYRXikCnAJoWms",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDViZDgzMjUxMmY1NjAzYWFjNDJlNTkiLCJleHAiOjE2ODQ0MzkyMTZ9.dAqmhr7BV-pddy1ix51eQC3xwikyQW5oF98p8q1GjOE",
 							"type": "string"
 						}
 					]
@@ -372,7 +372,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/games/644dde8822e3a5c85d0e506c",
+					"raw": "http://localhost:8000/games/646072de6087246881c4325a",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -380,7 +380,7 @@
 					"port": "8000",
 					"path": [
 						"games",
-						"644dde8822e3a5c85d0e506c"
+						"646072de6087246881c4325a"
 					]
 				}
 			},
@@ -394,7 +394,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDRkZDkyY2MwOWIyNzQ5Njc4YTUzNWYiLCJleHAiOjE2ODI4Mzc4NzV9.kpoPcSDX9AExUl7UMyM6Tlr9CIrnTRavkaxte9mj4m0",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDViZDgzMjUxMmY1NjAzYWFjNDJlNTkiLCJleHAiOjE2ODQ0MzkyMTZ9.dAqmhr7BV-pddy1ix51eQC3xwikyQW5oF98p8q1GjOE",
 							"type": "string"
 						}
 					]
@@ -403,7 +403,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"team_id\": \"644dd958c09b2749678a5361\",\r\n    \"game_id\": \"644ddccc7d85e891aa76199c\"\r\n}",
+					"raw": "{\r\n    \"team_id\": \"646072de6087246881c4325a\",\r\n    \"game_id\": \"646648bc1cf77884b7e4d6d7\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -433,7 +433,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDRkZGU3MjIyZTNhNWM4NWQwZTUwNmEiLCJleHAiOjE2ODI4MzkyMjF9.4QAt1YZQW23rXvGTjPC2C6sdDMdMTAYRXikCnAJoWms",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDViZDgzMjUxMmY1NjAzYWFjNDJlNTkiLCJleHAiOjE2ODQ0MzkyMTZ9.dAqmhr7BV-pddy1ix51eQC3xwikyQW5oF98p8q1GjOE",
 							"type": "string"
 						}
 					]
@@ -441,7 +441,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/games/644ddea522e3a5c85d0e506d",
+					"raw": "http://localhost:8000/games/646575c9ecda2d0a13333de6",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -449,7 +449,7 @@
 					"port": "8000",
 					"path": [
 						"games",
-						"644ddea522e3a5c85d0e506d"
+						"646575c9ecda2d0a13333de6"
 					]
 				}
 			},
