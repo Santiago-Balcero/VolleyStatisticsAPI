@@ -12,6 +12,8 @@ from main import app
 
 client = TestClient(app)
 
+TEST_PASSWORD = config("TEST_PASSWORD") 
+
 PLAYERS_MAIN_ROUTE = "/players"
 LOGIN_ROUTE = "/auth/login"
 
@@ -127,8 +129,17 @@ def test_get_player_by_id(token_for_tests, database_check) -> None:
 @pytest.mark.parametrize(
     "player, new_pass, expected",
     [
-        (player1, {"new_password": "abcd123"}, {"detail": "Invalid value for password."}),
-        (player1, {"new_password": "Calypsa2023Pelitos"},
+        (player1,
+            {"old_password": player1.password, "new_password": "abcd123"},
+            {"detail": "Invalid value for password."}),
+        (player1,
+            {"old_password": player1.password, "new_password": player1.password},
+            {"detail": "Unable to update password."}),
+        (player1,
+            {"old_password": "wrong_old_password", "new_password": "Calypsa2023Pelitos"},
+            {"detail": "Unable to update password."}),
+        (player1,
+            {"old_password": player1.password, "new_password": "Calypsa2023PelitosXXX"},
             {"data": None, "detail": "Password successfully changed."})
     ]
 )
@@ -152,11 +163,12 @@ def test_update_password(
 
 
 def test_update_player(database_check):
+    # For login, password is that because previous test changed the password
     result = client.post(
         LOGIN_ROUTE,
         data={
             "username": player1.email,
-            "password": player1.password})
+            "password": "Calypsa2023PelitosXXX"})
     assert result.json()["access_token"]
     token = result.json()["access_token"]
     result = client.put(
