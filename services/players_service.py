@@ -42,6 +42,17 @@ def create_player(player: NewPlayer) -> str:
 
 
 def update_password(new_password: NewPassword, player_id: str) -> bool:
+    if new_password.new_password == new_password.old_password:
+        LOG.debug("New password is same than the old one.")
+        ex.unable_to_update_password()
+    try:
+        password: str = get_db_client().players.find_one(
+            {"_id": ObjectId(player_id)}, {"password": 1})["password"]
+    except Exception as exception:
+        ex.no_data_connection("players_service/update_password/find_one", exception)
+    if not PASSWORD_CONTEXT.verify(new_password.old_password, password):
+        LOG.debug("Wrong current password.")
+        ex.unable_to_update_password()
     new_password_hash = PASSWORD_CONTEXT.hash(new_password.new_password)
     try:
         result = get_db_client().players.update_one(

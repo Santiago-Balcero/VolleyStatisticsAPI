@@ -148,10 +148,11 @@ class LoginPlayer(BaseModel):
 
 
 class NewPassword(BaseModel):
+    old_password: str
     new_password: str
 
     @validator("new_password")
-    def password_validation(cls, val):
+    def new_password_validation(cls, val):
         return password_check(val)
 
 

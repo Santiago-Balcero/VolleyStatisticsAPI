@@ -11,6 +11,7 @@
 - pip install pydantic
 - pip install pytest
 - pip install pytest-cov -> run "pytest --cov=name_of_module tests/" to see coverage of tests in module
+- pip install locustpip 
 
 ## TESTS
 
